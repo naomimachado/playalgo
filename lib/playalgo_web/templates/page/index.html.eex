@@ -1,0 +1,7 @@
+<div class="row">
+  <div class="col">
+    <h1>Join a Game</h1>
+    <input id="game-name" type="text" placeholder="Game name"></input>
+    <p><a target="_blank" href="" onclick="this.href='/game/' + document.getElementById('game-name').value" >Join</a></p>
+  </div>
+</div>
