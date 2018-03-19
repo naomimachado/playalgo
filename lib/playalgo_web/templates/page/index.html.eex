@@ -1,7 +1,12 @@
 <div class="row">
   <div class="col">
-    <h1>Join a Game</h1>
-    <input id="game-name" type="text" placeholder="Game name"></input>
-    <p><a target="_blank" href="" onclick="this.href='/game/' + document.getElementById('game-name').value" >Join</a></p>
+    <h1>Join a Game Channel</h1>
+    <input id="player-name" type="text" placeholder="Your Name"></input>
+    <span><p><select id="game-list">
+      <option value="guess_your_opponent">Guess Your Opponent</option>
+      <option value="sort_attack">Sort_Attack</option>
+      <option value="org_my_cheatsheet">Organize My Cheatsheet</option>
+    </select>
+    <a target="_blank" id="join" href="" onclick="this.href='/game/' + document.getElementById('game-list').options[document.getElementById('game-list').selectedIndex].value">Join</a></p></span>
   </div>
 </div>
