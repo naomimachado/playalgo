@@ -31,8 +31,8 @@ class Game extends React.Component{
     });
     return (
       <div className="row">
-          { game_list }
           <GuessOpponentGame challenge_guess_your_opponent={this.challenge_guess_your_opponent.bind(this)} />
+          { game_list }
       </div>
     )
   }
@@ -40,13 +40,13 @@ class Game extends React.Component{
 
 function GuessOpponentGame(params) {
   return (
-    <div className="col-6">
+    <div className="info col-12">
     <span><p><input type="text" id="player-name" placeholder="Your Name" /></p>
       <p><input type="text" id="challenge" placeholder="Challenge Number" /></p>
       <p><input type="text" id="game-name" placeholder="New Game Name" /></p>
       <p><input type="button" onClick={() =>
         params.challenge_guess_your_opponent(document.getElementById("game-name").value,
-        document.getElementById("player-name").value, document.getElementById("challenge").value)} value="Start" /></p></span>
+        document.getElementById("player-name").value, document.getElementById("challenge").value)} value="Challenge" /></p></span>
     </div>
   )
 }
@@ -54,6 +54,6 @@ function GuessOpponentGame(params) {
 function GameInstance(params) {
   return (<div className="col-6 game-item" onClick={() =>
     params.challenge_guess_your_opponent(params.game, document.getElementById("player-name").value, document.getElementById("challenge").value)}>
-      {params.game}
+      Join {params.game}
   </div>)
 }

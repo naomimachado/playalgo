@@ -15,9 +15,9 @@ defmodule Playalgo.Game do
     Map.keys(game.guess_your_opponent)
   end
 
-  defp new_game(game_channel, game_name, player_name, challenge) when game_channel == "guess_your_opponent" do
-     new_g = %{}
-     Map.put_new(new_g, game_name, Playalgo.GuessYourOpponent.challenge(Playalgo.GuessYourOpponent.new(), player_name, challenge))
+  defp new_game(game, game_channel, game_name, player_name, challenge) when game_channel == "guess_your_opponent" do
+     new_g = Playalgo.GuessYourOpponent.challenge(Playalgo.GuessYourOpponent.new(), player_name, challenge)
+     Map.put_new(game.guess_your_opponent, game_name, new_g)
   end
 
   defp cur_game(game, game_channel, game_name, player_name, challenge) when game_channel == "guess_your_opponent" do
@@ -32,10 +32,9 @@ defmodule Playalgo.Game do
   def join(game, game_channel, game_name, player_name, challenge) when game_channel == "guess_your_opponent" do
     if Map.has_key?(game.guess_your_opponent, game_name) do
       cur_g = cur_game(game, game_channel, game_name, player_name, challenge)
-      IO.inspect cur_g
       Map.put(game, :guess_your_opponent, cur_g)
     else
-      new_g = new_game(game_channel, game_name, player_name, challenge)
+      new_g = new_game(game, game_channel, game_name, player_name, challenge)
       Map.put(game, :guess_your_opponent, new_g)
     end
   end
