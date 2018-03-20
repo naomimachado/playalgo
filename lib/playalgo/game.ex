@@ -12,7 +12,7 @@ defmodule Playalgo.Game do
 
   defp joinable_games(game, game_channel) do
     Enum.filter Map.to_list(game.guess_your_opponent), fn(game) ->
-      elem(game, 1).player1.name == "" || elem(game, 1).player2.name == ""
+      elem(game, 1)[:player1].name == "" || elem(game, 1)[:player2].name == ""
     end
   end
 
