@@ -5,7 +5,6 @@ defmodule PlayalgoWeb.GamesChannel do
 
   def join("games:" <> name, payload, socket) do
     if authorized?(payload) do
-      Playalgo.GameBackup.load(name)
       game = Playalgo.GameBackup.load(name) || Game.new()
       socket = socket
       |> assign(:game, game)

@@ -1,5 +1,5 @@
 defmodule Playalgo.Game do
-  alias Playalgo.GuessOpponentGame
+  alias Playalgo.GuessYourOpponent
 
   def new do
     %{
@@ -10,21 +10,27 @@ defmodule Playalgo.Game do
     }
   end
 
-  defp joinable_games(game, game_channel) do
-    Enum.filter Map.to_list(game.guess_your_opponent), fn(game) ->
-      elem(game, 1)[:player1].name == "" || elem(game, 1)[:player2].name == ""
-    end
+  defp joinable_games(game, game_channel) when game_channel == "guess_your_opponent" do
+    IO.inspect game
+    Map.keys(game.guess_your_opponent)
   end
 
-  def client_view(game, game_channel) when game_channel == "guess_your_opponent" do
-    joinable_games(game, game_channel)
+  defp new_game(game_channel, game_name, player_name, challenge) when game_channel == "guess_your_opponent" do
+     new_g = %{}
+     Map.put_new(new_g, game_name, Playalgo.GuessYourOpponent.challenge(Playalgo.GuessYourOpponent.new(), player_name, challenge))
+  end
+
+  def client_view(game) do
+    joinable_games(game, "guess_your_opponent")
   end
 
   def join(game, game_channel, game_name, player_name, challenge) when game_channel == "guess_your_opponent" do
     if Map.has_key?(game.guess_your_opponent, game_name) do
-      Map.put(game.guess_your_opponent, game_name,
-        Playalgo.GuessOpponentGame.challenge(game.guess_your_opponent[game_name], player_name, challenge))
+      Map.put(game[:guess_your_opponent], game_name,
+        Playalgo.GuessYourOpponent.challenge(game.guess_your_opponent[game_name], player_name, challenge))
     else
-      Map.put_new(game.guess_your_opponent, game_name, Playalgo.GuessOpponentGame.challenge(Playalgo.GuessOpponentGame.new(), player_name, challenge))
+      new_g = new_game(game_channel, game_name, player_name, challenge)
+      Map.put(game, :guess_your_opponent, new_g)
+    end
   end
 end
