@@ -20,7 +20,7 @@ import "phoenix_html"
 
 import socket from "./socket"
 
-import game_init from "./guess_opponent_game";
+import game_init from "./game";
 
 function init() {
   let root = document.getElementById('game');

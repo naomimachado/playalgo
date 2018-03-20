@@ -17,12 +17,4 @@ defmodule Playalgo.GameBackup do
       Map.get(state, name)
     end
   end
-
-  def games() do
-    Agent.get __MODULE__, fn state ->
-      Enum.filter Map.to_list(state), fn(item) ->
-        elem(item, 1)[:player1].name == "" || elem(item, 1)[:player2].name == ""
-      end
-    end
-  end
 end

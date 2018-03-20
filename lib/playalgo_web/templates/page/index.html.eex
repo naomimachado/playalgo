@@ -1,7 +1,6 @@
 <div class="row">
   <div class="col">
     <h1>Join a Game Channel</h1>
-    <input id="player-name" type="text" placeholder="Your Name"></input>
     <span><p><select id="game-list">
       <option value="guess_your_opponent">Guess Your Opponent</option>
       <option value="sort_attack">Sort_Attack</option>
