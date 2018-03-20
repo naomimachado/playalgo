@@ -20,14 +20,20 @@ defmodule Playalgo.Game do
      Map.put_new(new_g, game_name, Playalgo.GuessYourOpponent.challenge(Playalgo.GuessYourOpponent.new(), player_name, challenge))
   end
 
+  defp cur_game(game, game_channel, game_name, player_name, challenge) when game_channel == "guess_your_opponent" do
+    cur_g = Playalgo.GuessYourOpponent.challenge(game.guess_your_opponent[game_name], player_name, challenge)
+    Map.put(game.guess_your_opponent, game_name, cur_g)
+  end
+
   def client_view(game) do
     joinable_games(game, "guess_your_opponent")
   end
 
   def join(game, game_channel, game_name, player_name, challenge) when game_channel == "guess_your_opponent" do
     if Map.has_key?(game.guess_your_opponent, game_name) do
-      Map.put(game[:guess_your_opponent], game_name,
-        Playalgo.GuessYourOpponent.challenge(game.guess_your_opponent[game_name], player_name, challenge))
+      cur_g = cur_game(game, game_channel, game_name, player_name, challenge)
+      IO.inspect cur_g
+      Map.put(game, :guess_your_opponent, cur_g)
     else
       new_g = new_game(game_channel, game_name, player_name, challenge)
       Map.put(game, :guess_your_opponent, new_g)
