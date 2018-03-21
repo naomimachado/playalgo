@@ -20,12 +20,13 @@ import "phoenix_html"
 
 import socket from "./socket"
 
-import game_init from "./guess_opponent_game";
+import game_init from "./game";
 
 function init() {
   let root = document.getElementById('game');
   if (root) {
-    let channel = socket.channel("games:" + window.gameName, {});
+    let player = document.cookie.split('=')[1];
+    let channel = socket.channel("games:" + window.gameName, {player: player});
     game_init(root, channel);
   }
 }

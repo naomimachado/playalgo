@@ -1,3 +1,16 @@
 /* This file is for your main application css. */
 @import "bootstrap";
 body { font-size: 20pt; }
+
+.game-item {
+   color: blue;
+}
+
+.game-item:hover {
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+.info {
+  align: center;
+}
