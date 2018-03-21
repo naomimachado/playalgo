@@ -1,4 +1,7 @@
 defmodule Playalgo.GuessYourOpponent do
+
+  alias Playalgo.RandSequence
+
 	def new do
 		%{
 			player1: %{
@@ -16,34 +19,42 @@ defmodule Playalgo.GuessYourOpponent do
 		}
 	end
 
-	defp skeleton(player, target) do
+	defp get_guess_list(challenge) do
+		rand_seq = Enum.sort(Playalgo.RandSequence(20, challenge - 150, challenge + 150, challenge))
+		Enum.map rand_seq, fn(x) ->
+		  %{number: x, click: false}
+		end
+	end
+
+	defp skeleton(player, target, opponent_list) do
 		%{
 			name: player[:name],
 			target: target,
-			guess_list: player[:guess_list]
+			guess_list: opponent_list
 		}
 	end
 
 	defp init_player(player, player_name, challenge) do
 		Map.put(player, :name, player_name)
 			|> Map.put(:challenge, elem(Integer.parse(challenge), 0))
+			|> Map.put(:guess_list, get_guess_list(challenge))
 	end
 
-        def client_view(game, player) when player == "player2" do
-                %{
-                        player_state: skeleton(game.player2, game.player1[:challenge])
-                }
-        end
+  def client_view(game, player) when player == "player2" do
+    %{
+      player_state: skeleton(game.player2, game.player1[:challenge], game.player1[:guess_list])
+    }
+  end
 
 	def client_view(game, player) when player == "player1" do
 		%{
-			player_state: skeleton(game.player1, game.player2[:challenge])
+			player_state: skeleton(game.player1, game.player2[:challenge], game.player2[:guess_list])
 		}
 	end
 
-        def has_opponent(game) do
-          game.player1.name != "" && game.player2.name != ""
-        end
+  def has_opponent(game) do
+    game.player1.name != "" && game.player2.name != ""
+  end
 
 	def get_player_state(game, player_name) do
                 player_state = nil
