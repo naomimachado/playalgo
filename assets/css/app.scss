@@ -14,3 +14,13 @@ body { font-size: 20pt; }
 .info {
   align: center;
 }
+
+#num{
+  padding: 15px;
+  border: 2px solid #00F;
+}
+
+#num:hover{
+  background-color: red;
+  color: white;
+}
