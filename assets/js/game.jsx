@@ -71,7 +71,7 @@ function RenderList(props) {
 
   return (
     <span className="rows">
-      <span id="num"> //onClick={() => props.selected(num)}>
+      <span id="num">
         {num}
       </span>
     </span>
