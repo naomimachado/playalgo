@@ -12,9 +12,9 @@ class Game extends React.Component{
     this.channel = props.channel;
     this.state = {
       listData: trying(),
-      clickedList: clickedNosList(trying())
+      clickedList: []
     };
-    console.log(this.state.listData);
+    //console.log(this.state.listData);
     this.channel.join()
       .receive("ok", this.gotView.bind(this))
       .receive("error", resp => { console.log("Unable to join", resp) });
@@ -27,7 +27,14 @@ class Game extends React.Component{
 
   gotView(view) {
     this.setState({game_list: view.game});
-    console.log(this.state);
+    //console.log(this.state);
+  }
+
+  clicked(num){
+    let addToList = {value: num, clicked: true};
+    console.log(addToList);
+    let newList = addingToList(addToList, this.state.clickedList);
+    this.setState({listData: this.state.listData, clickedList: newList});
   }
 
 
@@ -36,12 +43,12 @@ class Game extends React.Component{
       return <GameInstance game={game} challenge_guess_your_opponent={this.challenge_guess_your_opponent.bind(this)} key={ii} />;
     });
     let nums = _.map(this.state.listData, (num, ii) => {
-      return <RenderList num={num} />;
+      return <RenderList num={num} clicked={this.clicked.bind(this)} key={ii}/>;
     });
-    let clickednums = _.map(this.state.listData, (cnum, ii) => {
-      return <RenderClickedList cnum={cnum} />;
+    let clickednums = _.map(this.state.clickedList, (cnum, ii) => {
+      return <RenderClickedList cnum={cnum} key={ii}/>;
     });
-    console.log(this.state);
+    //console.log(this.state);
     return (
       <div className="rows">
         <div className="cols">
@@ -52,12 +59,33 @@ class Game extends React.Component{
           {nums}
         </div><br></br>
         <div className="cols">
-          Clicked Numbers:
+          Guessed Numbers:
           {clickednums}
         </div>
       </div>
     )
   }
+}
+
+function addingToList(numObj, exisitingList) {
+  console.log(exisitingList);
+  let numVal = numObj.value;
+  let exist = 0;
+  console.log(numVal);
+  for( var i = 0; i < exisitingList.length; i++){
+    console.log("for loop");
+    if(exisitingList[i].value === numVal){
+      console.log(exisitingList[i].value);
+      exist=1;
+    }
+  }
+  if (exist === 1){
+    exisitingList;
+  }
+  else{
+    exisitingList.push(numObj);
+  }
+  return exisitingList;
 }
 
 function trying() {
@@ -66,30 +94,24 @@ function trying() {
   {
     lst[i] = {value: i, clicked: false};
   }
-  console.log(lst);
+  //console.log(lst);
   return lst;
 }
 
-function clickedNosList(listData) {
-  var clst = [];
-  for(var i = 0; i < 20; i++)
-  {
-    if(listData[i].clicked == true)
-    {
-      clst = add(listData[i]);
-    }
-  }
+function clickedNosList(num) {
+  num.clicked = true;
+  let clst = clst.push(num);
   return clst;
 }
 
 function RenderList(props) {
   let listData = props.num;
-  console.log(props.num);
+  //console.log(props.num);
   let num = listData.value;
 
   return (
     <span className="rows">
-      <span id="num" onClick={()=> clickedNum(listData)}>
+      <span id="num" onClick={()=> props.clicked(num)}>
         {num}
       </span>
     </span>
@@ -98,12 +120,7 @@ function RenderList(props) {
 
 function RenderClickedList(props) {
   let clicked = props.cnum;
-  let show = "";
-  console.log("clicked",props.cnum);
-  let cnum = clicked.value;
-  if(cnum.clicked == true){
-    show = cnum.value;
-  }
+  let show = clicked.value;
     return (
       <span className="rows">
         <span id="num">
