@@ -11,7 +11,10 @@ class Game extends React.Component{
     this.channel = props.channel;
     this.state = {}
     this.channel.join()
-      .receive("ok", this.gotView.bind(this))
+      .receive("ok", resp => {
+        this.setState({player: resp.player});
+	this.gotView(resp);
+      })
       .receive("error", resp => { console.log("Unable to join", resp) });
   }
   
@@ -21,17 +24,20 @@ class Game extends React.Component{
   }
 
   gotView(view) {
-    this.setState({game_list: view.game});
+    this.setState({
+      player: this.state.player,
+      game_list: view.game
+    });
     console.log(this.state);
   }
 
   render() {
     let game_list = _.map(this.state.game_list, (game, ii) => {
-      return <GameInstance game={game} challenge_guess_your_opponent={this.challenge_guess_your_opponent.bind(this)} key={ii} />;
+      return <GameInstance player={this.state.player} game={game} challenge_guess_your_opponent={this.challenge_guess_your_opponent.bind(this)} key={ii} />;
     });
     return (
       <div className="row">
-          <GuessOpponentGame challenge_guess_your_opponent={this.challenge_guess_your_opponent.bind(this)} />
+          <GuessOpponentGame player={this.state.player} challenge_guess_your_opponent={this.challenge_guess_your_opponent.bind(this)} />
           { game_list }
       </div>
     )
@@ -41,19 +47,19 @@ class Game extends React.Component{
 function GuessOpponentGame(params) {
   return (
     <div className="info col-12">
-    <span><p><input type="text" id="player-name" placeholder="Your Name" /></p>
+    <span><h1>Guess Your Opponent: Welcome {params.player}</h1>
       <p><input type="text" id="challenge" placeholder="Challenge Number" /></p>
       <p><input type="text" id="game-name" placeholder="New Game Name" /></p>
       <p><input type="button" onClick={() =>
         params.challenge_guess_your_opponent(document.getElementById("game-name").value,
-        document.getElementById("player-name").value, document.getElementById("challenge").value)} value="Challenge" /></p></span>
+        params.player, document.getElementById("challenge").value)} value="Challenge" /></p></span>
     </div>
   )
 }
 
 function GameInstance(params) {
   return (<div className="col-6 game-item" onClick={() =>
-    params.challenge_guess_your_opponent(params.game, document.getElementById("player-name").value, document.getElementById("challenge").value)}>
+    params.challenge_guess_your_opponent(params.game, params.player, document.getElementById("challenge").value)}>
       Join {params.game}
   </div>)
 }

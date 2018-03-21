@@ -9,7 +9,7 @@ defmodule PlayalgoWeb.GamesChannel do
       socket = socket
       |> assign(:game, game)
       |> assign(:name, name)
-      {:ok, %{"join" => name, "game" => Game.client_view(game)}, socket}
+      {:ok, %{"join" => name, "game" => Game.client_view(game), "player" => payload["player"]}, socket}
     else
       {:error, %{reason: "unauthorized"}}
     end
