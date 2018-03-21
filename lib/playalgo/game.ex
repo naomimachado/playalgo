@@ -10,8 +10,26 @@ defmodule Playalgo.Game do
     }
   end
 
+  defp get_player_state_helper_guess_your_opponent(games, rem, player_name, player_state) when rem = 0 do
+    nil
+  end
+
+  defp get_player_state_helper_guess_your_opponent(games, rem, player_name, player_state) when player_state != nil do
+    player_state
+  end
+
+  defp get_player_state_helper_guess_your_opponent(games, rem, player_name, player_state) do
+    cur_g = game.guess_your_opponent[(hd games)]
+    get_player_state_helper_guess_your_opponent((tl games),
+      rem - 1,
+      Playalgo.GuessYourOpponent.get_player_state(cur_g, player_name))
+  end
+
+  defp get_player_state(games, game_channel, player_name) when game_channel = "guess_your_opponent" do
+    get_player_state_helper_guess_your_opponent(games, length(games), player_name, nil)
+  end
+
   defp joinable_games(game, game_channel) when game_channel == "guess_your_opponent" do
-    IO.inspect game
     Map.keys(game.guess_your_opponent)
   end
 
@@ -25,8 +43,12 @@ defmodule Playalgo.Game do
     Map.put(game.guess_your_opponent, game_name, cur_g)
   end
 
-  def client_view(game) do
-    joinable_games(game, "guess_your_opponent")
+  def client_view(game, game_channel, player_name) do
+    games = joinable_games(game, game_channel)
+    %{
+      games: games,
+      current_player: get_player_state(games, name, player_name)
+    }
   end
 
   def join(game, game_channel, game_name, player_name, challenge) when game_channel == "guess_your_opponent" do

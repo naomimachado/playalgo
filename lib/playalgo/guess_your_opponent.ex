@@ -36,6 +36,15 @@ defmodule Playalgo.GuessYourOpponent do
 		}
 	end
 
+	def get_player_state(game, player_name) do
+		if game.player1.name == player_name do
+			game.player1
+		end
+		if game.player2.name == player_name do
+		  game.player2
+		end
+	end
+
 	def challenge(game, player_name, challenge) do
 		if game.player1.name == "" do
 			Map.put(game, :player1, init_player(game.player1, player_name, challenge))
