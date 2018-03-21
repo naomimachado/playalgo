@@ -29,20 +29,31 @@ defmodule Playalgo.GuessYourOpponent do
 			|> Map.put(:challenge, elem(Integer.parse(challenge), 0))
 	end
 
-	def client_view(game) do
+        def client_view(game, player) when player == "player2" do
+                %{
+                        player_state: skeleton(game.player2, game.player1[:challenge])
+                }
+        end
+
+	def client_view(game, player) when player == "player1" do
 		%{
-			player1_skeleton: skeleton(game.player1, game.player2[:challenge]),
-			player2_skeleton: skeleton(game.player2, game.player1[:challenge])
+			player_state: skeleton(game.player1, game.player2[:challenge])
 		}
 	end
 
+        def has_opponent(game) do
+          game.player1.name != "" && game.player2.name != ""
+        end
+
 	def get_player_state(game, player_name) do
+                player_state = nil
 		if game.player1.name == player_name do
-			game.player1
+		  player_state = client_view(game, "player1")
 		end
 		if game.player2.name == player_name do
-		  game.player2
+		  player_state = client_view(game, "player2")
 		end
+          player_state
 	end
 
 	def challenge(game, player_name, challenge) do

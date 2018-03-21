@@ -12,10 +12,11 @@ class Game extends React.Component{
     this.state = {}
     this.channel.join()
       .receive("ok", resp => {
-        this.setState({player: resp.player});
-	this.gotView(resp);
+        this.state.player = resp.player;
+        this.gotView(resp);
       })
       .receive("error", resp => { console.log("Unable to join", resp) });
+    this.channel.on("join_game", this.gotView.bind(this));
   }
 
   challenge_guess_your_opponent(game_name, player_name, challenge) {
@@ -27,13 +28,14 @@ class Game extends React.Component{
     this.setState({
       player: this.state.player,
       game_list: view.game.games,
-      player_state: view.game.player_state
+      player_state: view.game.player_state,
+      has_opponent: view.game.has_opponent
     });
     console.log(this.state);
   }
 
   render() {
-    if (!this.state.player_state) {
+    if (!this.state.has_opponent) {
       let game_list = _.map(this.state.game_list, (game, ii) => {
         return <GameInstance player={this.state.player} game={game} challenge_guess_your_opponent={this.challenge_guess_your_opponent.bind(this)} key={ii} />;
       });
