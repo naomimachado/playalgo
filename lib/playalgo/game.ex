@@ -54,6 +54,14 @@ defmodule Playalgo.Game do
       Playalgo.GuessYourOpponent.has_opponent(game.guess_your_opponent[game_name])
     end
   end
+
+  def get_opponent_name(game, game_channel, game_name, player_name) when game_channel == "guess_your_opponent" do
+    if has_opponent(game, game_channel, game_name) do
+      Playalgo.GuessYourOpponent.get_opponent_name(game.guess_your_opponent[game_name], player_name)
+    else
+     ""
+    end
+  end
   
   def client_view(game, game_channel, game_name, player_name) do
     games = joinable_games(game, game_channel)

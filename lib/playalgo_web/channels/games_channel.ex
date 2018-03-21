@@ -22,7 +22,10 @@ defmodule PlayalgoWeb.GamesChannel do
     game = Game.join(socket.assigns[:game], game_channel, game_name, player_name, challenge)
     Playalgo.GameBackup.save(socket.assigns[:name], game)
     socket = assign(socket, :game, game)
-    broadcast socket, "join_game", %{ "game" => Game.client_view(game, game_channel, game_name, player_name)}
+    opponent_name = Game.get_opponent_name(game, game_channel, game_name, player_name)
+    if opponent_name != "" do
+      broadcast socket, "join_game", %{ "game" => Game.client_view(game, game_channel, game_name, opponent_name)}
+    end
     {:reply, {:ok, %{ "game" => Game.client_view(game, game_channel, game_name, player_name)}}, socket}
   end
 
