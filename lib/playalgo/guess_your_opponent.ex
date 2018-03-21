@@ -43,4 +43,5 @@ defmodule Playalgo.GuessYourOpponent do
 			Map.put(game, :player2, init_player(game.player2, player_name, challenge))
 		end
 	end
+
 end

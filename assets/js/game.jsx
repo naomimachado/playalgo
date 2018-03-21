@@ -12,6 +12,7 @@ class Game extends React.Component{
     this.state = {
       listData: trying()
     };
+    console.log(this.state.listData);
     this.channel.join()
       .receive("ok", this.gotView.bind(this))
       .receive("error", resp => { console.log("Unable to join", resp) });
@@ -27,6 +28,11 @@ class Game extends React.Component{
     console.log(this.state);
   }
 
+  selected(num){
+    this.channel.push("guessed_number",  {guess: num})
+      .receive("ok", this.gotView.bind(this))
+  }
+
   render() {
     let game_list = _.map(this.state.game_list, (game, ii) => {
       return <GameInstance game={game} challenge_guess_your_opponent={this.challenge_guess_your_opponent.bind(this)} key={ii} />;
@@ -35,14 +41,14 @@ class Game extends React.Component{
       return <RenderList num={num} />;
     });
     return (
-      <div className="row">
-        <div>
+      <div className="rows">
+        <div className="cols">
           <GuessOpponentGame challenge_guess_your_opponent={this.challenge_guess_your_opponent.bind(this)} />
           { game_list }
-          </div>
-      <div>
-        {nums}
-      </div>
+        </div>
+        <div className="cols">
+          {nums}
+        </div>
       </div>
     )
   }
@@ -50,7 +56,7 @@ class Game extends React.Component{
 
 function trying() {
   var lst = [];
-  for(var i = 0; i < 5; i++)
+  for(var i = 0; i < 20; i++)
   {
     lst[i] = {value: i};
   }
@@ -59,16 +65,16 @@ function trying() {
 }
 
 function RenderList(props) {
-  let listData = props.listData;
-  console.log(props.listData);
+  let listData = props.num;
+  console.log(props.num);
   let num = listData.value;
 
   return (
-    <div className="col-3">
-      <div>
+    <span className="rows">
+      <span id="num"> //onClick={() => props.selected(num)}>
         {num}
-      </div>
-    </div>
+      </span>
+    </span>
   )
 }
 
