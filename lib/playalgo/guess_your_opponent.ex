@@ -22,15 +22,15 @@ defmodule Playalgo.GuessYourOpponent do
 	end
 
   defp get_updated_score(res, clicks) when res == "match" do
-    div(100, clicks)
+    div(200, clicks)
   end
 
   defp get_updated_score(res, clicks) when res == "high" do
-    div(70, clicks)
+    div(100, clicks)
   end
 
   defp get_updated_score(res, clicks) when res == "low" do
-    div(70, clicks)
+    div(100, clicks)
   end
 
   defp get_update_score(res, clicks) when res == "very_high" do
