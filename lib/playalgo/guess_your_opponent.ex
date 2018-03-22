@@ -54,6 +54,11 @@ defmodule Playalgo.GuessYourOpponent do
     clicks = get_clicks(guesses)
     div(40, clicks)
   end
+  
+  defp get_updated_score(guesses, res) do
+    clicks = get_clicks(guesses)
+    div(50, clicks)
+  end
 
   defp guess_result(guess, target) do
     if guess == target do

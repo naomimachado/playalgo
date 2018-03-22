@@ -34,6 +34,10 @@ defmodule PlayalgoWeb.GamesChannel do
     {res, game} = Game.guess(socket.assigns[:game], game_channel, game_name, player_name, guess)
     Playalgo.GameBackup.save(socket.assigns[:name], game)
     socket = assign(socket, :game, game)
+    opponent_name = Game.get_opponent_name(game, game_channel, game_name, player_name)
+    if opponent_name != "" do
+      broadcast socket, "guess", %{ "game" => Game.client_view(game, game_channel, game_name, opponent_name)}
+    end
     {:reply, {:ok, %{ "game" => Game.client_view(game, game_channel, game_name, player_name), "result" => res}}, socket}
   end
 

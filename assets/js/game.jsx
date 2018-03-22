@@ -17,6 +17,10 @@ class Game extends React.Component{
     })
     .receive("error", resp => { console.log("Unable to join", resp) });
     this.channel.on("join_game", this.gotView.bind(this));
+    this.channel.on("guess", resp => {
+      console.log("from opponent");
+      this.gotView(resp);
+    });
   }
 
   challenge_guess_your_opponent(game_name, player_name, challenge) {
@@ -25,7 +29,6 @@ class Game extends React.Component{
   }
 
   guess_guess_your_opponent(game_name, player_name, guess) {
-    console.log(game_name, player_name, guess);
     this.channel.push("guess", {game_channel: "guess_your_opponent", game_name: game_name, player_name: player_name, guess: guess})
       .receive("ok", resp => {
         this.gotView(resp);
@@ -41,8 +44,10 @@ class Game extends React.Component{
       game_name: view.game.game_name
     });
     if (this.state.has_opponent) {
-      console.log("update_track");
       this.update_track();
+    }
+    if(view.result) {
+      console.log(view.result);
     }
     console.log(this.state);
   }
@@ -166,11 +171,9 @@ function changePosCar(value, car_id) {
   if (car) {
     let x = document.getElementById(car_id).style.right;
     if (x) {
-      var newVal = value;
-      document.getElementById(car_id).style.right = newVal+"px";
+      document.getElementById(car_id).style.right = value + "px";
     } else {
-      value = value + 10;
-      console.log("No existing", value);
+      value = value + 1;
       document.getElementById(car_id).style.right = value + "px";
     }
   }
