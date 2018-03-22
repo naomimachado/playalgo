@@ -25,12 +25,19 @@ class Game extends React.Component{
       .receive("ok", this.gotView.bind(this))
   }
 
+  guess_guess_your_opponent(game_name, player_name, guess) {
+    console.log(game_name, player_name, guess);
+    this.channel.push("guess", {game_channel: "guess_your_opponent", game_name: game_name, player_name: player_name, guess: guess})
+      .receive("ok", this.gotView.bind(this))
+  }
+
   gotView(view) {
     this.setState({
       player: this.state.player,
       game_list: view.game.games,
       player_state: view.game.player_state,
-      has_opponent: view.game.has_opponent
+      has_opponent: view.game.has_opponent,
+      game_name: view.game.game_name
     });
     console.log(this.state);
   }
@@ -59,9 +66,9 @@ class Game extends React.Component{
       )
     } else {
         let nums = _.map(this.state.player_state.player_state.guess_list, (num, ii) => {
-          return <RenderList num={num} clicked={this.clicked.bind(this)} key={ii}/>;
+          return <RenderList num={num} clicked={this.clicked.bind(this)} game_name={this.state.game_name} 
+		player_name={this.state.player} guess_guess_your_opponent={this.guess_guess_your_opponent.bind(this)} key={ii}/>;
         });
-        console.log(this.state.player_state.player_state.guess_list);
         return (
           <div className="rows">
             <div className="cols">
@@ -99,10 +106,8 @@ function GameInstance(params) {
 
 
 function addingToList(numObj, exisitingList) {
-  console.log(exisitingList);
   let numVal = numObj.number;
   let exist = 0;
-  console.log(numVal);
   for( var i = 0; i < exisitingList.length; i++){
     console.log("for loop");
     if((exisitingList[i].number === numVal) && (exisitingList[i].click === false)){
@@ -121,7 +126,7 @@ function RenderList(props) {
 
   return (
     <span className="rows">
-      <span id="num" onClick={()=> props.clicked(num)}>
+      <span id="num" onClick={()=> props.guess_guess_your_opponent(props.game_name, props.player_name, num)}>
         {num}
       </span>
     </span>

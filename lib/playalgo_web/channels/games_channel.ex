@@ -29,11 +29,13 @@ defmodule PlayalgoWeb.GamesChannel do
     {:reply, {:ok, %{ "game" => Game.client_view(game, game_channel, game_name, player_name)}}, socket}
   end
 
-  # def handle_in("guess", %{"guess" => num}, socket) do
-  #   Playalgo.GameBackup.save(socket.assigns[:name], game)
-  #   socket = assign(socket, :game, game)
-  #   {:reply, {:ok, %{ "game" => Game.client_view(game)}}, socket}
-  # end
+  def handle_in("guess", %{"game_channel" => game_channel,
+    "game_name" => game_name, "player_name" => player_name, "guess" => guess}, socket) do
+    {res, game} = Game.guess(socket.assigns[:game], game_channel, game_name, player_name, guess)
+    Playalgo.GameBackup.save(socket.assigns[:name], game)
+    socket = assign(socket, :game, game)
+    {:reply, {:ok, %{ "game" => Game.client_view(game, game_channel, game_name, player_name), "result" => res}}, socket}
+  end
 
   # Add authorization logic here as required.
   defp authorized?(_payload) do

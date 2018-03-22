@@ -9,7 +9,7 @@ defmodule Playalgo.Game do
       }
     }
   end
-  
+
   defp get_player_state_helper_guess_your_opponent(game, games, rem, player_name, game_name, player_state) when rem == 0 do
     {game_name, player_state}
   end
@@ -46,7 +46,7 @@ defmodule Playalgo.Game do
     cur_g = Playalgo.GuessYourOpponent.challenge(game.guess_your_opponent[game_name], player_name, challenge)
     Map.put(game.guess_your_opponent, game_name, cur_g)
   end
-  
+
   def has_opponent(game, game_channel, game_name) when game_channel == "guess_your_opponent" do
     if game_name == "" do
       false
@@ -62,13 +62,14 @@ defmodule Playalgo.Game do
      ""
     end
   end
-  
+
   def client_view(game, game_channel, game_name, player_name) do
     games = joinable_games(game, game_channel)
     %{
       games: games,
       has_opponent: has_opponent(game, game_channel, game_name),
-      player_state: get_player_game_state(game, game_channel, game_name, player_name)
+      player_state: get_player_game_state(game, game_channel, game_name, player_name),
+      game_name: game_name
     }
   end
 
@@ -78,7 +79,8 @@ defmodule Playalgo.Game do
     %{
       games: games,
       player_state: player_state,
-      has_opponent: has_opponent(game, game_channel, game_name)
+      has_opponent: has_opponent(game, game_channel, game_name),
+      game_name: game_name
     }
   end
 
@@ -90,5 +92,11 @@ defmodule Playalgo.Game do
       new_g = new_game(game, game_channel, game_name, player_name, challenge)
       Map.put(game, :guess_your_opponent, new_g)
     end
+  end
+
+  def guess(game, game_channel, game_name, player_name, guess) when game_channel == "guess_your_opponent" do
+    {res, new_state} = Playalgo.GuessYourOpponent.guess(game.guess_your_opponent[game_name], player_name, guess)
+    guess_your_opponent_state = Map.put(game.guess_your_opponent, game_name, new_state)
+    {res, Map.put(game, :guess_your_opponent, guess_your_opponent_state)}
   end
 end
