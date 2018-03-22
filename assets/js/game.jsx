@@ -5,7 +5,6 @@ export default function game_init(root, channel) {
   ReactDOM.render(<Game channel={channel} />, root);
 }
 
-
 class Game extends React.Component{
   constructor(props)  {
     super(props);
@@ -29,8 +28,7 @@ class Game extends React.Component{
     console.log(game_name, player_name, guess);
     this.channel.push("guess", {game_channel: "guess_your_opponent", game_name: game_name, player_name: player_name, guess: guess})
       .receive("ok", resp => {
-        this.gotView.bind(this);
-        this.clicked(guess);
+        this.gotView(resp);
       });
   }
 
@@ -42,18 +40,16 @@ class Game extends React.Component{
       has_opponent: view.game.has_opponent,
       game_name: view.game.game_name
     });
+    if (this.state.has_opponent) {
+      console.log("update_track");
+      this.update_track();
+    }
     console.log(this.state);
   }
 
-  clicked(num){
-    //let addToList = {number: num, click: true};
-    //console.log(addToList);
-    //let newList = addingToList(addToList, this.state.player_state.player_state.guess_list);
-    //let newHintList = checkMatch(this.state.target, newList)
-    //this.state.player_state.guess_list = newList;
+  update_track(){
     changePosCar1(this.state.player_state.player_state.score);
     changePosCar2(50);
-    this.setState(this.state);
   }
 
 
@@ -71,7 +67,7 @@ class Game extends React.Component{
       )
     } else {
       let nums = _.map(this.state.player_state.player_state.guess_list, (num, ii) => {
-        return <RenderList num={num} clicked={this.clicked.bind(this)} game_name={this.state.game_name}
+        return <RenderList num={num}  game_name={this.state.game_name}
   player_name={this.state.player} guess_guess_your_opponent={this.guess_guess_your_opponent.bind(this)} key={ii}/>;
       });
 
@@ -79,7 +75,6 @@ class Game extends React.Component{
         return <RenderGuessList num={num} key={ii}/>;
       });
 
-      console.log(this.state.player_state.player_state.guess_list);
       return (
         <div className="rows flex-container">
           <div id="game-stuff">
@@ -127,24 +122,8 @@ function GuessOpponentGame(params) {
   </div>)
 }
 
-
-function addingToList(numObj, exisitingList) {
-  let numVal = numObj.number;
-  let exist = 0;
-  for( var i = 0; i < exisitingList.length; i++){
-    console.log("for loop");
-    if((exisitingList[i].number === numVal) && (exisitingList[i].click === false)){
-      console.log(exisitingList[i].number);
-      exisitingList[i].click = true;
-    }
-  }
-  return exisitingList;
-}
-
-
 function RenderList(props) {
   let listData = props.num;
-  //console.log(props.num);
   let num = listData.number;
 
   return (
@@ -160,7 +139,6 @@ function RenderList(props) {
 
 function RenderGuessList(props) {
   let listData = props.num;
-  //console.log(props.num);
   let num = listData.number;
   let click = listData.click;
 
@@ -179,16 +157,17 @@ function RenderGuessList(props) {
 }
 
 function changePosCar1(value) {
-  var x = document.getElementById("car1").style.right;
-
-  console.log("previous value in px",x.substring(0, x.length - 2));
-  //console.log(x.substring(0, x.length - 2));
-  if (x) {
-    var newVal = parseInt(x.substring(0, x.length - 2))+value;
-    console.log(newVal);
-    document.getElementById("car1").style.right = newVal+"px";
-  } else {
-    document.getElementById("car1").style.right = "10px";
+  let car = document.getElementById("car1");
+  if (car) {
+    let x = document.getElementById("car1").style.right;
+    if (x) {
+      var newVal = value;
+      document.getElementById("car1").style.right = newVal+"px";
+    } else {
+      value = value + 10;
+      console.log("No existing", value);
+      document.getElementById("car1").style.right = value + "px";
+    }
   }
 }
 
