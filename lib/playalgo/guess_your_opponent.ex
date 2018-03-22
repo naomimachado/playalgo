@@ -9,6 +9,7 @@ defmodule Playalgo.GuessYourOpponent do
 				score: 0,
 				guess_list: [],
 				challenge: 0
+                                
 			},
 			player2: %{
 				name: "",
@@ -112,11 +113,13 @@ defmodule Playalgo.GuessYourOpponent do
 		end
 	end
 
-	defp skeleton(player, target, opponent_list) do
+	defp skeleton(player, target, opponent_list, id, opponent_score) do
 		%{
 			name: player[:name],
       score: player[:score],
-			guess_list: opponent_list
+			guess_list: opponent_list,
+                        id: id,
+                        opponent_score: opponent_score
 		}
 	end
 
@@ -144,13 +147,13 @@ defmodule Playalgo.GuessYourOpponent do
 
   def client_view(game, player) when player == "player2" do
     %{
-      player_state: skeleton(game.player2, game.player1[:challenge], game.player1[:guess_list])
+      player_state: skeleton(game.player2, game.player1[:challenge], game.player1[:guess_list], 2, game.player1[:score])
     }
   end
 
 	def client_view(game, player) when player == "player1" do
 		%{
-			player_state: skeleton(game.player1, game.player2[:challenge], game.player2[:guess_list])
+			player_state: skeleton(game.player1, game.player2[:challenge], game.player2[:guess_list], 1, game.player2[:score])
 		}
 	end
 

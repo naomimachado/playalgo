@@ -47,9 +47,14 @@ class Game extends React.Component{
     console.log(this.state);
   }
 
-  update_track(){
-    changePosCar1(this.state.player_state.player_state.score);
-    changePosCar2(50);
+  update_track() {
+    if (this.state.player_state.player_state.id == 1) {
+      changePosCar(this.state.player_state.player_state.score, "car1");
+      changePosCar(this.state.player_state.player_state.opponent_score, "car2");
+    } else {
+      changePosCar(this.state.player_state.player_state.score, "car2");
+      changePosCar(this.state.player_state.player_state.opponent_score, "car1");
+    }
   }
 
 
@@ -156,21 +161,17 @@ function RenderGuessList(props) {
   }
 }
 
-function changePosCar1(value) {
-  let car = document.getElementById("car1");
+function changePosCar(value, car_id) {
+  let car = document.getElementById(car_id);
   if (car) {
-    let x = document.getElementById("car1").style.right;
+    let x = document.getElementById(car_id).style.right;
     if (x) {
       var newVal = value;
-      document.getElementById("car1").style.right = newVal+"px";
+      document.getElementById(car_id).style.right = newVal+"px";
     } else {
       value = value + 10;
       console.log("No existing", value);
-      document.getElementById("car1").style.right = value + "px";
+      document.getElementById(car_id).style.right = value + "px";
     }
   }
-}
-
-function changePosCar2(value) {
-  document.getElementById("car2").style.right = value+"px";
 }
