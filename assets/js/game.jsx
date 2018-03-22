@@ -12,17 +12,17 @@ class Game extends React.Component{
     this.channel = props.channel;
     this.state = {}
     this.channel.join()
-      .receive("ok", resp => {
-        this.state.player = resp.player;
-        this.gotView(resp);
-      })
-      .receive("error", resp => { console.log("Unable to join", resp) });
+    .receive("ok", resp => {
+      this.state.player = resp.player;
+      this.gotView(resp);
+    })
+    .receive("error", resp => { console.log("Unable to join", resp) });
     this.channel.on("join_game", this.gotView.bind(this));
   }
 
   challenge_guess_your_opponent(game_name, player_name, challenge) {
     this.channel.push("join_game", {game_channel: "guess_your_opponent", game_name: game_name, player_name: player_name, challenge: challenge})
-      .receive("ok", this.gotView.bind(this))
+    .receive("ok", this.gotView.bind(this))
   }
 
   gotView(view) {
@@ -39,8 +39,10 @@ class Game extends React.Component{
     let addToList = {number: num, click: true};
     console.log(addToList);
     let newList = addingToList(addToList, this.state.player_state.player_state.guess_list);
-    //let newHintList = checkMatch(this.state.target, newList);
+    //let newHintList = checkMatch(this.state.target, newList)
     this.state.player_state.guess_list = newList;
+    changePosCar1(10);
+    changePosCar2(50);
     this.setState(this.state);
   }
 
@@ -52,28 +54,45 @@ class Game extends React.Component{
       });
       return (
         <div className="row">
-            <h1>Guess Your Opponent: Welcome {this.state.player}</h1>
-            <GuessOpponentGame player={this.state.player} challenge_guess_your_opponent={this.challenge_guess_your_opponent.bind(this)} />
-            { game_list }
+          <h1>Guess Your Opponent: Welcome {this.state.player}</h1>
+          <GuessOpponentGame player={this.state.player} challenge_guess_your_opponent={this.challenge_guess_your_opponent.bind(this)} />
+          { game_list }
         </div>
       )
     } else {
-        let nums = _.map(this.state.player_state.player_state.guess_list, (num, ii) => {
-          return <RenderList num={num} clicked={this.clicked.bind(this)} key={ii}/>;
-        });
-        console.log(this.state.player_state.player_state.guess_list);
-        return (
-          <div className="rows">
+      let nums = _.map(this.state.player_state.player_state.guess_list, (num, ii) => {
+        return <RenderList num={num} clicked={this.clicked.bind(this)} key={ii}/>;
+      });
+
+      let guesses = _.map(this.state.player_state.player_state.guess_list, (num, ii) => {
+        return <RenderGuessList num={num} key={ii}/>;
+      });
+
+      console.log(this.state.player_state.player_state.guess_list);
+      return (
+        <div className="rows flex-container">
+          <div id="game-stuff">
             <div className="cols">
               Welcome player:<span>{this.state.player}</span>
-            </div>
-            <div className="cols">
-              {nums}
-            </div><br></br>
           </div>
-        )
-      }
+          <div className="cols cols-3">
+            List of Numbers:<br></br>
+            <ul>{nums}</ul>
+          </div><br></br>
+          <div>
+            Guessed Numbers:<br></br>
+            {guesses}
+          </div>
+        </div>
+        <br></br>
+        <div id="car-stuff">
+          <img src="/images/1.png" id="car1"></img><img src="/images/finish.png" className="endline"></img><br></br>
+          <img src="/images/2.png" id="car2"></img><img src="/images/finish.png" className="endline"></img>
+        </div>
+      </div>
+    )
   }
+}
 }
 
 function GuessOpponentGame(params) {
@@ -83,17 +102,17 @@ function GuessOpponentGame(params) {
         <p><input type="text" id="challenge" placeholder="Challenge Number" /></p>
         <p><input type="text" id="game-name" placeholder="New Game Name" /></p>
         <p><input type="button" onClick={() =>
-          params.challenge_guess_your_opponent(document.getElementById("game-name").value,
-          params.player, document.getElementById("challenge").value)} value="Challenge" /></p>
-      </span>
-    </div>
-  )
-}
+            params.challenge_guess_your_opponent(document.getElementById("game-name").value,
+            params.player, document.getElementById("challenge").value)} value="Challenge" /></p>
+        </span>
+      </div>
+    )
+  }
 
-function GameInstance(params) {
-  return (<div className="col-6 game-item" onClick={() =>
+  function GameInstance(params) {
+    return (<div className="col-6 game-item" onClick={() =>
     params.challenge_guess_your_opponent(params.game, params.player, document.getElementById("challenge").value)}>
-      Join {params.game}
+    Join {params.game}
   </div>)
 }
 
@@ -121,9 +140,49 @@ function RenderList(props) {
 
   return (
     <span className="rows">
-      <span id="num" onClick={()=> props.clicked(num)}>
-        {num}
-      </span>
+      <li>
+        <span className="cols-3" id="num" onClick={()=> props.clicked(num)}>
+          {num}
+        </span>
+      </li>
     </span>
   )
+}
+
+function RenderGuessList(props) {
+  let listData = props.num;
+  //console.log(props.num);
+  let num = listData.number;
+  let click = listData.click;
+
+  if(click === true){
+    return (
+      <span className="rows">
+        <span id="guess">
+          {num}
+        </span>
+      </span>
+    )
+  }
+  else{
+    return null;
+  }
+}
+
+function changePosCar1(value) {
+  var x = document.getElementById("car1").style.right;
+
+  console.log("previous value in px",x.substring(0, x.length - 2));
+  //console.log(x.substring(0, x.length - 2));
+  if (x) {
+    var newVal = parseInt(x.substring(0, x.length - 2))+value;
+    console.log(newVal);
+    document.getElementById("car1").style.right = newVal+"px";
+  } else {
+    document.getElementById("car1").style.right = "10px";
+  }
+}
+
+function changePosCar2(value) {
+  document.getElementById("car2").style.right = value+"px";
 }

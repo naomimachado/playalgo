@@ -27,7 +27,7 @@ function init() {
   if (root) {
     let player = document.cookie.split('=')[1];
     let channel = socket.channel("games:" + window.gameName, {player: player});
-    console.log(channel);
+    console.log(player);
     game_init(root, channel);
   }
 }

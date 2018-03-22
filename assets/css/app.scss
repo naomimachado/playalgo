@@ -24,3 +24,59 @@ body { font-size: 20pt; }
   background-color: red;
   color: white;
 }
+
+#guess{
+  padding: 15px;
+  border: 2px solid #00F;
+}
+
+ul{
+  columns: 10;
+}
+
+li{
+  padding: 25px;
+  list-style-type: none;
+}
+
+img{
+
+}
+
+#car1{
+  width: 250px;
+  height: 175px;
+  position: absolute;
+  right: 1px;
+}
+
+#car2{
+  width: 250px;
+  height: 175px;
+  position: absolute;
+  right: 1px;
+}
+
+
+.endline{
+  background-color: white;
+  width: 175px;
+  height: 175px;
+}
+
+.flex-container{
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+}
+
+.flex-container > #game-stuff {
+  font-size: 30px;
+}
+
+.flex-container > #car-stuff {
+  background-color: black;
+}
