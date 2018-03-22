@@ -95,7 +95,6 @@ defmodule Playalgo.GuessYourOpponent do
     target = get_target(game, player_name)
     res =  guess_result(guess, target)
     new_guess_list = get_updated_guess_list(game, player_name, guess)
-    IO.inspect res
     score = get_updated_score(new_guess_list, res)
     if game.player1.name != player_name do
       player1 = Map.put(game.player1, :guess_list, new_guess_list)
