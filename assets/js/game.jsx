@@ -9,6 +9,7 @@ export default function game_init(root, channel) {
 class Game extends React.Component{
   constructor(props)  {
     super(props);
+    this.channel = props.channel;
     this.state = {}
     this.channel.join()
       .receive("ok", resp => {
@@ -35,11 +36,12 @@ class Game extends React.Component{
   }
 
   clicked(num){
-    let addToList = {number: num, clicked: true};
+    let addToList = {number: num, click: true};
     console.log(addToList);
-    let newList = addingToList(addToList, this.state.player_state.guess_list);
+    let newList = addingToList(addToList, this.state.player_state.player_state.guess_list);
     //let newHintList = checkMatch(this.state.target, newList);
-    this.setState({this.state.player_state.guess_list: newList});
+    this.state.player_state.guess_list = newList;
+    this.setState(this.state);
   }
 
 
@@ -56,18 +58,21 @@ class Game extends React.Component{
         </div>
       )
     } else {
-
-        let nums = _.map(this.state.player_state.guess_list, (num, ii) => {
+        let nums = _.map(this.state.player_state.player_state.guess_list, (num, ii) => {
           return <RenderList num={num} clicked={this.clicked.bind(this)} key={ii}/>;
         });
-        //console.log(this.state);
+        console.log(this.state.player_state.player_state.guess_list);
         return (
           <div className="rows">
+            <div className="cols">
+              Welcome player:<span>{this.state.player}</span>
+            </div>
             <div className="cols">
               {nums}
             </div><br></br>
           </div>
         )
+      }
   }
 }
 
@@ -100,9 +105,9 @@ function addingToList(numObj, exisitingList) {
   console.log(numVal);
   for( var i = 0; i < exisitingList.length; i++){
     console.log("for loop");
-    if((exisitingList[i].number === numVal) && (exisitingList[i].clicked === false)){
+    if((exisitingList[i].number === numVal) && (exisitingList[i].click === false)){
       console.log(exisitingList[i].number);
-      exisitingList[i].clicked = true;
+      exisitingList[i].click = true;
     }
   }
   return exisitingList;
