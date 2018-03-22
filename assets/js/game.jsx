@@ -106,10 +106,8 @@ function GameInstance(params) {
 
 
 function addingToList(numObj, exisitingList) {
-  console.log(exisitingList);
   let numVal = numObj.number;
   let exist = 0;
-  console.log(numVal);
   for( var i = 0; i < exisitingList.length; i++){
     console.log("for loop");
     if((exisitingList[i].number === numVal) && (exisitingList[i].click === false)){
