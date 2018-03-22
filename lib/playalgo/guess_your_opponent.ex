@@ -20,12 +20,12 @@ defmodule Playalgo.GuessYourOpponent do
 	end
 
 	defp get_guess_list(challenge) do
-		rand_seq = Enum.sort(Playalgo.RandSequence.get_rand_seq(20, challenge - 150, challenge + 150, challenge))
+		rand_seq = Enum.sort(Playalgo.RandSequence.get_rand_seq(40, Enum.random(0..challenge), 
+		  Enum.random((challenge + 1)..(challenge + 235)), challenge))
 		Enum.map rand_seq, fn(x) ->
 		  %{number: x, click: false}
 		end
 	end
-
 	defp skeleton(player, target, opponent_list) do
 		%{
 			name: player[:name],
