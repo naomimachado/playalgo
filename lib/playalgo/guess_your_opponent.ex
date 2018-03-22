@@ -19,16 +19,97 @@ defmodule Playalgo.GuessYourOpponent do
 		}
 	end
 
+  defp get_clicks(guesses) do
+    Enum.reduce guesses, 0, fn(x, acc) ->
+      if x.click == true do
+        acc + 1
+      else
+        acc
+      end
+    end
+  end
+
+  defp get_updated_score(guesses, res) when res == "match" do
+    clicks = get_clicks(guesses)
+    div(100/clicks)
+  end
+
+  defp get_updated_score(guesses, res) when res == "high" do
+    clicks = get_clicks(guesses)
+    div(70/clicks)
+  end
+
+  defp get_updated_score(guesses, res) when res == "low" do
+    clicks = get_clicks(guesses)
+    div(70/clicks)
+  end
+
+  defp get_update_score(guesses, res) when res == "very high" do
+    clicks = get_clicks(guesses)
+    div(40/clicks)
+  end
+
+  defp get_updated_score(guesses, res) when res == "very low" do
+    clicks = get_clicks(guesses)
+    div(40/clicks)
+  end
+
+  defp guess_result(guess, target) do
+    if guess == target do
+      "match"
+    else
+      if guess > target do
+        if (guess - target) >= 20 do
+          "very high"
+        else
+          "high"
+      else
+        if (target - guess) >= 20 do
+          "very low"
+        else
+          "low"
+  end
+
+  defp get_updated_guess_list(game, player_name, guess) do
+    current_list = get_guesses(game, player_name)
+    Enum.Map, current_list, fn(number) ->
+      if number.number == guess do
+        Map.put(number, :clicked, true)
+      else
+        number
+    end
+  end
+
+  defp update_game(game, player_name, guess) do
+    target = get_target(game, player_name)
+    res =  guess_result(guess, target)
+    new_guess_list = get_updated_guess_list(game, player_name, guess)
+    score = get_updated_score(new_list, res)
+    if game.player1.name != player_name do
+      player1 = Map.put(game.player1, :guess_list, new_list)
+      player2 = Map.put(game.player2, :score, game.player2[:score] + score)
+      {res, Map.put(game, :player1, player1)
+      |> Map.put(:player2, player2)}
+    else
+      player2 = Map.put(game.player2, :guess_list, new_list)
+      player1 = Map.put(game.player1, :score, game.player1[:score] + score)
+      {res, Map.put(game, :player2, player2)
+      |> Map.put(:score, game.player2[:score] + score)}
+    end
+  end
+
 	defp get_guess_list(challenge) do
-		rand_seq = Enum.sort(Playalgo.RandSequence.get_rand_seq(40, Enum.random(0..challenge), 
+		rand_seq = Enum.sort(Playalgo.RandSequence.get_rand_seq(40, Enum.random(0..challenge),
 		  Enum.random((challenge + 1)..(challenge + 235)), challenge))
 		Enum.map rand_seq, fn(x) ->
 		  %{number: x, click: false}
 		end
 	end
+
 	defp skeleton(player, target, opponent_list) do
 		%{
 			name: player[:name],
+      score: player[:score],
 			guess_list: opponent_list
 		}
 	end
@@ -38,6 +119,20 @@ defmodule Playalgo.GuessYourOpponent do
 			|> Map.put(:challenge, elem(Integer.parse(challenge), 0))
 			|> Map.put(:guess_list, get_guess_list(elem(Integer.parse(challenge), 0)))
 	end
+
+  defp get_target(game, player_name) do
+    if game.player1.name != player_name do
+      game.player1.challenge
+    else
+      game.player2.challenge
+  end
+
+  defp get_guesses(game, player_name) do
+    if game.player1.name != player_name do
+      game.player1.guess_list
+    else
+      game.player2.guess_list
+  end
 
   def client_view(game, player) when player == "player2" do
     %{
@@ -64,14 +159,14 @@ defmodule Playalgo.GuessYourOpponent do
   end
 
 	def get_player_state(game, player_name) do
-                player_state = nil
+    player_state = nil
 		if game.player1.name == player_name do
 		  player_state = client_view(game, "player1")
 		end
 		if game.player2.name == player_name do
 		  player_state = client_view(game, "player2")
 		end
-          player_state
+      player_state
 	end
 
 	def challenge(game, player_name, challenge) do
@@ -81,4 +176,8 @@ defmodule Playalgo.GuessYourOpponent do
 			Map.put(game, :player2, init_player(game.player2, player_name, challenge))
 		end
 	end
+
+  def guess(game, player_name, guess) do
+    update_game(game, player_name, guess)
+  end
 end
