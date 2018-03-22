@@ -68,7 +68,8 @@ defmodule Playalgo.Game do
     %{
       games: games,
       has_opponent: has_opponent(game, game_channel, game_name),
-      player_state: get_player_game_state(game, game_channel, game_name, player_name)
+      player_state: get_player_game_state(game, game_channel, game_name, player_name),
+      game_name: game_name
     }
   end
 
@@ -78,7 +79,8 @@ defmodule Playalgo.Game do
     %{
       games: games,
       player_state: player_state,
-      has_opponent: has_opponent(game, game_channel, game_name)
+      has_opponent: has_opponent(game, game_channel, game_name),
+      game_name: game_name
     }
   end
 
@@ -92,8 +94,8 @@ defmodule Playalgo.Game do
     end
   end
 
-  def guess(game, game_channel, game_name, player_name, guess) when game_channel = "guess_your_opponent" do
-    res, new_state = Playalgo.GuessYourOpponent.guess(game.guess_your_opponent[game_name], player_name, guess)
+  def guess(game, game_channel, game_name, player_name, guess) when game_channel == "guess_your_opponent" do
+    {res, new_state} = Playalgo.GuessYourOpponent.guess(game.guess_your_opponent[game_name], player_name, guess)
     guess_your_opponent_state = Map.put(game.guess_your_opponent, game_name, new_state)
     {res, Map.put(game, :guess_your_opponent, guess_your_opponent_state)}
   end

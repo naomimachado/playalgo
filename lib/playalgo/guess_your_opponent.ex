@@ -31,27 +31,27 @@ defmodule Playalgo.GuessYourOpponent do
 
   defp get_updated_score(guesses, res) when res == "match" do
     clicks = get_clicks(guesses)
-    div(100/clicks)
+    div(100, clicks)
   end
 
   defp get_updated_score(guesses, res) when res == "high" do
     clicks = get_clicks(guesses)
-    div(70/clicks)
+    div(70, clicks)
   end
 
   defp get_updated_score(guesses, res) when res == "low" do
     clicks = get_clicks(guesses)
-    div(70/clicks)
+    div(70, clicks)
   end
 
-  defp get_update_score(guesses, res) when res == "very high" do
+  defp get_update_score(guesses, res) when res == "very_high" do
     clicks = get_clicks(guesses)
-    div(40/clicks)
+    div(40, clicks)
   end
 
-  defp get_updated_score(guesses, res) when res == "very low" do
+  defp get_updated_score(guesses, res) when res == "very_low" do
     clicks = get_clicks(guesses)
-    div(40/clicks)
+    div(40, clicks)
   end
 
   defp guess_result(guess, target) do
@@ -59,24 +59,29 @@ defmodule Playalgo.GuessYourOpponent do
       "match"
     else
       if guess > target do
-        if (guess - target) >= 20 do
-          "very high"
+        if (guess - target) >= 100 do
+          "very_high"
         else
           "high"
+        end
       else
-        if (target - guess) >= 20 do
-          "very low"
+        if (target - guess) >= 100 do
+          "very_low"
         else
           "low"
+        end
+      end
+    end
   end
 
   defp get_updated_guess_list(game, player_name, guess) do
     current_list = get_guesses(game, player_name)
-    Enum.Map, current_list, fn(number) ->
+    Enum.map current_list, fn(number) ->
       if number.number == guess do
-        Map.put(number, :clicked, true)
+        Map.put(number, :click, true)
       else
         number
+      end
     end
   end
 
@@ -84,17 +89,18 @@ defmodule Playalgo.GuessYourOpponent do
     target = get_target(game, player_name)
     res =  guess_result(guess, target)
     new_guess_list = get_updated_guess_list(game, player_name, guess)
-    score = get_updated_score(new_list, res)
+    IO.inspect res
+    score = get_updated_score(new_guess_list, res)
     if game.player1.name != player_name do
-      player1 = Map.put(game.player1, :guess_list, new_list)
+      player1 = Map.put(game.player1, :guess_list, new_guess_list)
       player2 = Map.put(game.player2, :score, game.player2[:score] + score)
       {res, Map.put(game, :player1, player1)
       |> Map.put(:player2, player2)}
     else
-      player2 = Map.put(game.player2, :guess_list, new_list)
+      player2 = Map.put(game.player2, :guess_list, new_guess_list)
       player1 = Map.put(game.player1, :score, game.player1[:score] + score)
       {res, Map.put(game, :player2, player2)
-      |> Map.put(:score, game.player2[:score] + score)}
+      |> Map.put(:player1, player1)}
     end
   end
 
@@ -125,6 +131,7 @@ defmodule Playalgo.GuessYourOpponent do
       game.player1.challenge
     else
       game.player2.challenge
+    end
   end
 
   defp get_guesses(game, player_name) do
@@ -132,6 +139,7 @@ defmodule Playalgo.GuessYourOpponent do
       game.player1.guess_list
     else
       game.player2.guess_list
+    end
   end
 
   def client_view(game, player) when player == "player2" do

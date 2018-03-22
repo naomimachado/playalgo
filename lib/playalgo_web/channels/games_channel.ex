@@ -30,8 +30,8 @@ defmodule PlayalgoWeb.GamesChannel do
   end
 
   def handle_in("guess", %{"game_channel" => game_channel,
-    "game_name" => game_name, "player_name", player_name, "guess" => guess}, socket) do
-    res, game = Game.guess(socket.assigns[:game], game_channel, game_name, player_name, guess)
+    "game_name" => game_name, "player_name" => player_name, "guess" => guess}, socket) do
+    {res, game} = Game.guess(socket.assigns[:game], game_channel, game_name, player_name, guess)
     Playalgo.GameBackup.save(socket.assigns[:name], game)
     socket = assign(socket, :game, game)
     {:reply, {:ok, %{ "game" => Game.client_view(game, game_channel, game_name, player_name), "result" => res}}, socket}
