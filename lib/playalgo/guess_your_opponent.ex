@@ -9,53 +9,39 @@ defmodule Playalgo.GuessYourOpponent do
 				score: 0,
 				guess_list: [],
 				challenge: 0
-                                
+        clicks: 0
 			},
 			player2: %{
 				name: "",
 				score: 0,
 				guess_list: [],
-				challenge: 0
+				challenge: 0,
+        clicks: 0
 			}
 		}
 	end
 
-  defp get_clicks(guesses) do
-    Enum.reduce guesses, 0, fn(x, acc) ->
-      if x.click == true do
-        acc + 1
-      else
-        acc
-      end
-    end
-  end
-
-  defp get_updated_score(guesses, res) when res == "match" do
-    clicks = get_clicks(guesses)
+  defp get_updated_score(res, clicks) when res == "match" do
     div(100, clicks)
   end
 
-  defp get_updated_score(guesses, res) when res == "high" do
-    clicks = get_clicks(guesses)
+  defp get_updated_score(res, clicks) when res == "high" do
     div(70, clicks)
   end
 
-  defp get_updated_score(guesses, res) when res == "low" do
-    clicks = get_clicks(guesses)
+  defp get_updated_score(res, clicks) when res == "low" do
     div(70, clicks)
   end
 
-  defp get_update_score(guesses, res) when res == "very_high" do
-    clicks = get_clicks(guesses)
+  defp get_update_score(res, clicks) when res == "very_high" do
     div(40, clicks)
   end
 
-  defp get_updated_score(guesses, res) when res == "very_low" do
-    clicks = get_clicks(guesses)
+  defp get_updated_score(res, clicks) when res == "very_low" do
     div(40, clicks)
   end
-  
-  defp get_updated_score(guesses, res) do
+
+  defp get_updated_score(res, clicks) do
     clicks = get_clicks(guesses)
     div(50, clicks)
   end
@@ -95,15 +81,18 @@ defmodule Playalgo.GuessYourOpponent do
     target = get_target(game, player_name)
     res =  guess_result(guess, target)
     new_guess_list = get_updated_guess_list(game, player_name, guess)
-    score = get_updated_score(new_guess_list, res)
+    clicks = get_clicks(game, player_name) + 1
+    score = get_updated_score(res, clicks)
     if game.player1.name != player_name do
       player1 = Map.put(game.player1, :guess_list, new_guess_list)
       player2 = Map.put(game.player2, :score, game.player2[:score] + score)
+        |> Map.put(game.player2, :clicks, clicks)
       {res, Map.put(game, :player1, player1)
       |> Map.put(:player2, player2)}
     else
       player2 = Map.put(game.player2, :guess_list, new_guess_list)
       player1 = Map.put(game.player1, :score, game.player1[:score] + score)
+        |> Map.put(game.player1, :clicks, clicks)
       {res, Map.put(game, :player2, player2)
       |> Map.put(:player1, player1)}
     end
@@ -117,13 +106,15 @@ defmodule Playalgo.GuessYourOpponent do
 		end
 	end
 
-	defp skeleton(player, target, opponent_list, id, opponent_score) do
+	defp skeleton(player, target, opponent_list, id, opponent_score, opponent_name) do
 		%{
 			name: player[:name],
       score: player[:score],
 			guess_list: opponent_list,
-                        id: id,
-                        opponent_score: opponent_score
+      clicks: player[:clicks],
+      id: id,
+      opponent_score: opponent_score,
+      opponent_name: opponent_name
 		}
 	end
 
@@ -141,6 +132,14 @@ defmodule Playalgo.GuessYourOpponent do
     end
   end
 
+  defp get_clicks(game, player_name) do
+    if game.player1.name != player_name do
+      game.player1.clicks
+    else
+      game.player2.clicks
+    end
+  end
+
   defp get_guesses(game, player_name) do
     if game.player1.name != player_name do
       game.player1.guess_list
@@ -151,13 +150,13 @@ defmodule Playalgo.GuessYourOpponent do
 
   def client_view(game, player) when player == "player2" do
     %{
-      player_state: skeleton(game.player2, game.player1[:challenge], game.player1[:guess_list], 2, game.player1[:score])
+      player_state: skeleton(game.player2, game.player1[:challenge], game.player1[:guess_list], 2, game.player1[:score], game.player1[:name])
     }
   end
 
 	def client_view(game, player) when player == "player1" do
 		%{
-			player_state: skeleton(game.player1, game.player2[:challenge], game.player2[:guess_list], 1, game.player2[:score])
+			player_state: skeleton(game.player1, game.player2[:challenge], game.player2[:guess_list], 1, game.player2[:score], game.player2[:name])
 		}
 	end
 
