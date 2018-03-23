@@ -75,7 +75,8 @@ defmodule Playalgo.Game do
       games: games,
       has_opponent: has_opponent(game, game_channel, game_name),
       player_state: get_player_game_state(game, game_channel, game_name, player_name),
-      game_name: game_name
+      game_name: game_name,
+      winner: game.guess_your_opponent[game_name][:winner]
     }
   end
 
@@ -87,7 +88,7 @@ defmodule Playalgo.Game do
       player_state: player_state,
       has_opponent: has_opponent(game, game_channel, game_name),
       game_name: game_name,
-      winner: game.guess_your_opponent[game_name].winner
+      winner: game.guess_your_opponent[game_name][:winner]
     }
   end
 
