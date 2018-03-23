@@ -25,9 +25,17 @@ import game_init from "./game";
 function init() {
   let root = document.getElementById('game');
   if (root) {
-    let cookies = document.cookie.split(';')
-    let player = cookies[0].split('=')[1];
-    let type = cookies[1].split('=')[1];
+    let cookies = document.cookie.split(';');
+    let player = null;
+    let type = null;
+    cookies.forEach((item) => {
+      let key_array = item.trim().split('=');
+      if (key_array[0] == "player") {
+        player = key_array[1];
+      } else {
+        type = key_array[1];
+      }
+    });
     let channel = socket.channel("games:" + window.gameName, {player: player, type: type});
     game_init(root, channel);
   }

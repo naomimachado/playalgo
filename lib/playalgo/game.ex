@@ -129,4 +129,8 @@ defmodule Playalgo.Game do
     guess_your_opponent_state = Map.put(game.guess_your_opponent, game_name, new_state)
     {res, Map.put(game, :guess_your_opponent, guess_your_opponent_state)}
   end
+ 
+  def view(game, game_channel, game_name, player_name) when game_channel == "guess_your_opponent" do
+    game
+  end
 end

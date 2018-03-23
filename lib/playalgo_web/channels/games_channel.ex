@@ -9,14 +9,18 @@ defmodule PlayalgoWeb.GamesChannel do
       socket = socket
       |> assign(:game, game)
       |> assign(:name, name)
+      
+      response = nil
       if payload["type"] == "player" do
-        {:ok, %{"join" => name, "game" => Game.client_view(game, name, payload["player"]), "player" => payload["player"]}, socket}
-      else if type == "viewer"
-        {:ok, %{"join" => name, "game" => Game.viewer_view(game, name, payload["player"]), "player" => payload["player"]}, socket}
+        response = {:ok, %{"join" => name, "game" => Game.client_view(game, name, payload["player"]), "player" => payload["player"]}, socket}
+      end
+      if payload["type"] == "viewer" do
+        response = {:ok, %{"join" => name, "view" => Game.viewer_view(game, name, payload["player"]), "player" => payload["player"]}, socket}
       end
     else
-      {:error, %{reason: "unauthorized"}}
+      response = {:error, %{reason: "unauthorized"}}
     end
+    response
   end
 
   # Channels can be used in a request/response fashion

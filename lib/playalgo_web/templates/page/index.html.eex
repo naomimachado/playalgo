@@ -18,7 +18,8 @@
       var player = document.getElementById('game-player-name').value;
       var type = document.getElementById('joinee-type').options[document.getElementById('joinee-type').selectedIndex].value;
       var channel = document.getElementById('game-list').options[document.getElementById('game-list').selectedIndex].value;
-      document.cookie = "player=" + player + ";type=" + type;
+      document.cookie = "player=" + player;
+      document.cookie = "type=" + type;
       location.href='/game/' + channel;
     }
   </script>
