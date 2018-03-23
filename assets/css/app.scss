@@ -1,6 +1,12 @@
 /* This file is for your main application css. */
 @import "bootstrap";
-body { font-size: 20pt; }
+body {
+  font-size: 20pt;
+  font-family: Rockwell, Courier Bold, Courier, Georgia, Times, Times New Roman, serif;
+  display: block;
+  background-color: #FFF8EC;
+  font-weight: normal;
+}
 
 .game-item {
    color: blue;
@@ -15,19 +21,30 @@ body { font-size: 20pt; }
   align: center;
 }
 
+#wait{
+  color: red;
+}
+
 #num{
   padding: 15px;
-  border: 2px solid #00F;
+  background-color: orange;
+  border: 2px solid grey;
+  box-shadow: 10px 5px 5px grey;
+  font-weight: bold;
+  color: white;
 }
 
 #num:hover{
   background-color: red;
-  color: white;
+  color: black;
 }
 
 #guess{
   padding: 15px;
-  border: 2px solid #00F;
+  background-color: powderblue;
+  border: 2px solid grey;
+  box-shadow: 10px 5px 5px grey;
+  font-weight: bold;
 }
 
 ul{
@@ -37,10 +54,6 @@ ul{
 li{
   padding: 25px;
   list-style-type: none;
-}
-
-img{
-
 }
 
 #car1{
@@ -79,4 +92,6 @@ img{
 
 .flex-container > #car-stuff {
   background-color: black;
+  background-image: url("/images/road1.png");
+  background-size: contain;
 }
