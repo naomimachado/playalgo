@@ -81,17 +81,18 @@ defmodule Playalgo.GuessYourOpponent do
     res =  guess_result(guess, target)
     new_guess_list = get_updated_guess_list(game, player_name, guess)
     clicks = get_clicks(game, player_name) + 1
+    IO.inspect clicks
     score = get_updated_score(res, clicks)
     if game.player1.name != player_name do
       player1 = Map.put(game.player1, :guess_list, new_guess_list)
       player2 = Map.put(game.player2, :score, game.player2[:score] + score)
-        |> Map.put(:clicks, clicks)
+      player2 = Map.put(player2, :clicks, get_clicks(game, player_name) + 1)
       {res, Map.put(game, :player1, player1)
       |> Map.put(:player2, player2)}
     else
       player2 = Map.put(game.player2, :guess_list, new_guess_list)
       player1 = Map.put(game.player1, :score, game.player1[:score] + score)
-        |> Map.put(:clicks, clicks)
+      player1 = Map.put(player1, :clicks, get_clicks(game, player_name) + 1)
       {res, Map.put(game, :player2, player2)
       |> Map.put(:player1, player1)}
     end
@@ -132,7 +133,7 @@ defmodule Playalgo.GuessYourOpponent do
   end
 
   defp get_clicks(game, player_name) do
-    if game.player1.name != player_name do
+    if game.player1.name == player_name do
       game.player1.clicks
     else
       game.player2.clicks
