@@ -114,15 +114,21 @@ class Game extends React.Component{
         <div className="row">
             <h1>Guess Your Opponent: Welcome {this.state.player}</h1>
             <RuleList />
+            <GameInfo />
           <GuessOpponentGame player={this.state.player} challenge_guess_your_opponent={this.challenge_guess_your_opponent.bind(this)} />
-          { game_list }
+          <p>
+            <h3>Existing Games:</h3><br/>
+            <h3>Join:</h3>
+            { game_list }<br/>
+            <h3>Full games:(view only)</h3>
+          </p>
         </div>
       )
     } else {
         return (
           <div className="row">
               <h1>Guess Your Opponent: Welcome {this.state.player}</h1>
-              <h1> Waiting for player to join........</h1>
+              <h1 id="wait"> Waiting for player to join........</h1>
               <RuleList />
           </div>
         )
@@ -139,11 +145,11 @@ class Game extends React.Component{
 
       if( this.state.winner){
         return (
-
           <div className="rows flex-container">
+            <p>
             <div id="game-stuff">
               <div className="cols">
-                Winner is:<span>{this.state.winner}</span>
+                <pre/>Winner is:<span>{this.state.winner}</span>
             </div>
             <div>
               Stats:<br></br>
@@ -157,26 +163,29 @@ class Game extends React.Component{
             <img src="/images/1.png" id="car1"></img><img src="/images/finish.png" className="endline"></img><br></br>
             <img src="/images/2.png" id="car2"></img><img src="/images/finish.png" className="endline"></img>
           </div>
+          </p>
         </div>
         )
       } else {
       return (
         <div className="rows flex-container">
           <div id="game-stuff">
+            <p>
             <div className="cols">
-              Welcome player:<span>{this.state.player}</span>
+              &nbsp;Welcome player:<span>{this.state.player}</span>
           </div>
           <div className="cols cols-3">
-            List of Numbers:<br></br>
+            <pre/>&nbsp;List of Numbers:<br></br>
             <ul>{nums}</ul>
           </div><br></br>
           <div>
-            Guessed Numbers:<br></br>
-            {guesses}
+            <pre/>&nbsp;Guessed Numbers:<br/><br/>
+            <ul>{guesses}</ul>
           </div>
           <br></br>
           <div>
-          Clue:<b>{this.state.result}</b></div>
+          <pre/>&nbsp;Clue:<b>{this.state.result}</b></div>
+          </p>
         </div>
         <br></br>
         <div id="car-stuff">
@@ -256,6 +265,53 @@ function changePosCar(value, car_id) {
       document.getElementById(car_id).style.right = value + "px";
     }
   }
+}
+
+function GameInfo(){
+  return(
+    <table>
+      <tbody>
+        <tr>
+          <th><b>How to join:</b></th>
+        </tr>
+        <tr>
+          <td>
+            You can join any of the existing games(if any) or Issue a new game challenge!
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <b>To start a new Game:</b>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Enter a challenge number for your opponent to guess.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            And enter a new game name (it should be unique from the existing ones)
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <b>To join an existing Game:</b>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Enter a challenge number for your opponent to guess.
+          </td>
+        </tr>
+        <tr>
+          <td>
+            And click on the game you want to join from the exisitng game list.
+          </td>
+        </tr>
+    </tbody>
+  </table>
+  )
 }
 
 function RuleList() {
