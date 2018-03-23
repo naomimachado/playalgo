@@ -58,9 +58,6 @@ class Game extends React.Component{
         game_name: ""
       });
     }
-    if (this.state.has_opponent) {
-      this.update_track();
-    }
     if(view.result) {
       console.log(view.result);
       this.state.result = view.result;
@@ -68,6 +65,10 @@ class Game extends React.Component{
     }
     if(view.winner){
       this.state.winner = view.winner;
+      this.setState(this.state);
+    }
+    if (this.state.has_opponent) {
+      this.update_track();
       this.setState(this.state);
     }
     console.log(this.state);
@@ -89,7 +90,8 @@ class Game extends React.Component{
         document.getElementById("car2").style.right = "87.5%";
       }
     }
-    else if (this.state.winner && this.state.winner == this.state.player_state.player_state.opponent_name){
+    if (this.state.winner && this.state.winner == this.state.player_state.player_state.opponent_name){
+      console.log("opponent")
       if (this.state.player_state.player_state.id == 1) {
         document.getElementById("car2").style.right = "87.5%";
       }
