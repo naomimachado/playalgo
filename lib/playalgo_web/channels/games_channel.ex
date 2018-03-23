@@ -37,12 +37,7 @@ defmodule PlayalgoWeb.GamesChannel do
     socket = assign(socket, :game, game)
     opponent_name = Game.get_opponent_name(game, game_channel, game_name, player_name)
     if opponent_name != "" do
-      winner = nil
-      if res == "match" do
-        IO.inspect game
-        winner=player_name
-      end
-      broadcast socket, "guess", %{ "game" => Game.client_view(game, game_channel, game_name, opponent_name), "winner" => winner}
+      broadcast socket, "guess", %{ "game" => Game.client_view(game, game_channel, game_name, opponent_name)}
     end
     {:reply, {:ok, %{ "game" => Game.client_view(game, game_channel, game_name, player_name), "result" => res}}, socket}
   end

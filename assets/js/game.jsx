@@ -63,8 +63,8 @@ class Game extends React.Component{
       this.state.result = view.result;
       this.setState(this.state);
     }
-    if(view.winner){
-      this.state.winner = view.winner;
+    if(view.game.winner){
+      this.state.winner = view.game.winner;
       this.setState(this.state);
     }
     if (this.state.has_opponent) {
