@@ -33,6 +33,10 @@ defmodule Playalgo.Game do
     Playalgo.GuessYourOpponent.get_player_state(game.guess_your_opponent[game_name], player_name)
   end
 
+  defp get_viewer_state(game, game_channel, game_name, player_name) when game_channel == "guess_your_opponent" do
+    Playalgo.GuessYourOpponent.get_viewer_state(game.guess_your_opponent[game_name], player_name)
+  end
+
   defp joinable_games(game, game_channel) when game_channel == "guess_your_opponent" do
     Enum.filter Map.keys(game.guess_your_opponent), fn(x) ->
 	!has_opponent(game, game_channel, x)
@@ -92,6 +96,21 @@ defmodule Playalgo.Game do
     }
   end
 
+  def viewer_view(game, game_channel, game_name, player_name) do
+    games = all_games(game, game_channel)
+    %{
+      games: games,
+      viewer_state: get_viewer_state(game, game_channel, game_name, player_name)
+    }
+  end
+
+  def viewer_view(game, game_channel, player_name) do
+    games = all_games(game, game_channel)
+    %{
+      games: games,
+    }
+  end
+
   def join(game, game_channel, game_name, player_name, challenge) when game_channel == "guess_your_opponent" do
     if Map.has_key?(game.guess_your_opponent, game_name) do
       cur_g = cur_game(game, game_channel, game_name, player_name, challenge)
@@ -109,5 +128,9 @@ defmodule Playalgo.Game do
     end
     guess_your_opponent_state = Map.put(game.guess_your_opponent, game_name, new_state)
     {res, Map.put(game, :guess_your_opponent, guess_your_opponent_state)}
+  end
+ 
+  def view(game, game_channel, game_name, player_name) when game_channel == "guess_your_opponent" do
+    game
   end
 end

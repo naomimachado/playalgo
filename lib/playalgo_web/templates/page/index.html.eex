@@ -1,7 +1,11 @@
 <div class="row">
   <div class="col">
     <h1>Join a Game Channel</h1>
-    <input type="text" id="game-player-name" placeholder="Enter your name"/>
+    <span><input type="text" id="game-player-name" placeholder="Enter your name"/>
+      <select id="joinee-type">
+        <option value="player">Player</option>
+        <option value="viewer">Viewer</option>
+      </select></span>
     <span><p><select id="game-list">
       <option value="guess_your_opponent">Guess Your Opponent</option>
       <option value="sort_attack">Sort_Attack</option>
@@ -12,8 +16,10 @@
   <script>
     function join() {
       var player = document.getElementById('game-player-name').value;
-      var channel = document.getElementById('game-list').options[document.getElementById('game-list').selectedIndex].value
+      var type = document.getElementById('joinee-type').options[document.getElementById('joinee-type').selectedIndex].value;
+      var channel = document.getElementById('game-list').options[document.getElementById('game-list').selectedIndex].value;
       document.cookie = "player=" + player;
+      document.cookie = "type=" + type;
       location.href='/game/' + channel;
     }
   </script>

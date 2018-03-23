@@ -193,4 +193,11 @@ defmodule Playalgo.GuessYourOpponent do
   def guess(game, player_name, guess) do
     update_game(game, player_name, guess)
   end
+
+  def get_viewer_state(game, player_name) do
+    %{
+      player1_state: game.player1,
+      player2_state: game.player2
+    }
+  end
 end
