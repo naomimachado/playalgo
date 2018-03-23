@@ -153,13 +153,14 @@ class Game extends React.Component{
             </div>
             <div>
               Stats:<br></br>
-            <p>Guesses in this round:</p>
-              {guesses}
+            <p>Guesses in this round:
+              <br/>
+              {guesses}</p>
               <GameStats state={this.state}/>
             </div>
           </div>
           <br></br>
-          <div id="car-stuff">
+          <div id="car-stuff1">
             <img src="/images/1.png" id="car1"></img><img src="/images/finish.png" className="endline"></img><br></br>
             <img src="/images/2.png" id="car2"></img><img src="/images/finish.png" className="endline"></img>
           </div>
