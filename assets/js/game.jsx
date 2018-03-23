@@ -63,6 +63,12 @@ class Game extends React.Component{
     }
     if(view.result) {
       console.log(view.result);
+      this.state.result = view.result;
+      this.setState(this.state);
+    }
+    if(view.winner){
+      this.state.winner = view.winner;
+      this.setState(this.state);
     }
     console.log(this.state);
   }
@@ -75,21 +81,50 @@ class Game extends React.Component{
       changePosCar(this.state.player_state.player_state.score, "car2");
       changePosCar(this.state.player_state.player_state.opponent_score, "car1");
     }
+    if(this.state.winner && this.state.winner == this.state.player){
+      if (this.state.player_state.player_state.id == 1) {
+        document.getElementById("car1").style.right = "87.5%";
+      }
+      else {
+        document.getElementById("car2").style.right = "87.5%";
+      }
+    }
+    else if (this.state.winner && this.state.winner == this.state.player_state.player_state.opponent_name){
+      if (this.state.player_state.player_state.id == 1) {
+        document.getElementById("car2").style.right = "87.5%";
+      }
+      else {
+        document.getElementById("car1").style.right = "87.5%";
+      }
+    }
   }
 
 
   render() {
     if (!this.state.has_opponent) {
+
+      if(!this.state.player_state){
+
       let game_list = _.map(this.state.game_list, (game, ii) => {
         return <GameInstance player={this.state.player} game={game} challenge_guess_your_opponent={this.challenge_guess_your_opponent.bind(this)} key={ii} />;
       });
       return (
         <div className="row">
-          <h1>Guess Your Opponent: Welcome {this.state.player}</h1>
+            <h1>Guess Your Opponent: Welcome {this.state.player}</h1>
+            <RuleList />
           <GuessOpponentGame player={this.state.player} challenge_guess_your_opponent={this.challenge_guess_your_opponent.bind(this)} />
           { game_list }
         </div>
       )
+    } else {
+        return (
+          <div className="row">
+              <h1>Guess Your Opponent: Welcome {this.state.player}</h1>
+              <h1> Waiting for player to join........</h1>
+              <RuleList />
+          </div>
+        )
+      }
     } else {
       let nums = _.map(this.state.player_state.player_state.guess_list, (num, ii) => {
         return <RenderList num={num}  game_name={this.state.game_name}
@@ -100,6 +135,29 @@ class Game extends React.Component{
         return <RenderGuessList num={num} key={ii}/>;
       });
 
+      if( this.state.winner){
+        return (
+
+          <div className="rows flex-container">
+            <div id="game-stuff">
+              <div className="cols">
+                Winner is:<span>{this.state.winner}</span>
+            </div>
+            <div>
+              Stats:<br></br>
+            <p>Guesses in this round:</p>
+              {guesses}
+              <GameStats state={this.state}/>
+            </div>
+          </div>
+          <br></br>
+          <div id="car-stuff">
+            <img src="/images/1.png" id="car1"></img><img src="/images/finish.png" className="endline"></img><br></br>
+            <img src="/images/2.png" id="car2"></img><img src="/images/finish.png" className="endline"></img>
+          </div>
+        </div>
+        )
+      } else {
       return (
         <div className="rows flex-container">
           <div id="game-stuff">
@@ -114,6 +172,9 @@ class Game extends React.Component{
             Guessed Numbers:<br></br>
             {guesses}
           </div>
+          <br></br>
+          <div>
+          Clue:<b>{this.state.result}</b></div>
         </div>
         <br></br>
         <div id="car-stuff">
@@ -123,6 +184,7 @@ class Game extends React.Component{
       </div>
     )
   }
+}
 }
 }
 
@@ -192,4 +254,68 @@ function changePosCar(value, car_id) {
       document.getElementById(car_id).style.right = value + "px";
     }
   }
+}
+
+function RuleList() {
+  return(
+    <table>
+      <tbody>
+      <tr>
+        <th> RULES:</th>
+      </tr>
+      <tr>
+        <td>1. You will guess the number choosen by your opponent from the list of numbers.</td>
+      </tr>
+      <tr>
+        <td>2. For each guess you will get a clue about your distance from the correct guess.</td>
+      </tr>
+      <tr>
+        <td>3. The <b>clues</b> will be like </td>
+      </tr>
+      <tr>
+        <td> a) very_high => Your guess is very large than the number.
+        </td>
+      </tr>
+      <tr>
+        <td> b) very_low => Your guess is very small than the number.
+        </td>
+      </tr>
+      <tr>
+        <td> c) high => Your guess is just large than the number.
+        </td>
+      </tr>
+      <tr>
+        <td> d) low => Your guess is just small than the number.
+        </td>
+      </tr>
+      <tr>
+        <td> e) match => Your guess is correct.
+        </td>
+      </tr>
+        <tr>
+          <td><b>Hint:</b>
+          </td>
+        </tr>
+        <tr>
+          <td> <i>To win you must try to click as minimum tiles as possible.</i>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  )
+}
+
+function GameStats(params){
+  return(
+    <table>
+    <tbody>
+      <tr><td>Game Name:</td><td>{params.state.game_name}</td></tr>
+      <tr><td>Name:</td><td>{params.state.player}</td></tr>
+        <tr><td>Opponent's Name:</td><td>{params.state.player_state.player_state.opponent_name}</td></tr>
+        <tr><td>Your score:</td><td>{params.state.player_state.player_state.score}</td></tr>
+        <tr><td>Opponent's Score:</td><td>{params.state.player_state.player_state.opponent_score}</td></tr>
+      <tr><td>Clicks:</td><td>{params.state.player_state.player_state.clicks}</td></tr>
+
+    </tbody></table>
+  )
 }
