@@ -31,19 +31,15 @@ defmodule PlayalgoWeb.GamesChannel do
 
   def handle_in("guess", %{"game_channel" => game_channel,
     "game_name" => game_name, "player_name" => player_name, "guess" => guess}, socket) do
-    game = Playalgo.GameBackup.load(game_channel)
+    game = game = Playalgo.GameBackup.load(game_channel)
     {res, game} = Game.guess(game, game_channel, game_name, player_name, guess)
-    winner = nil
-    if res == "match" do
-      winner = player_name
-    end
     Playalgo.GameBackup.save(socket.assigns[:name], game)
     socket = assign(socket, :game, game)
     opponent_name = Game.get_opponent_name(game, game_channel, game_name, player_name)
     if opponent_name != "" do
       broadcast socket, "guess", %{ "game" => Game.client_view(game, game_channel, game_name, opponent_name)}
     end
-    {:reply, {:ok, %{ "game" => Game.client_view(game, game_channel, game_name, player_name), "result" => res, "winner" => winner}}, socket}
+    {:reply, {:ok, %{ "game" => Game.client_view(game, game_channel, game_name, player_name), "result" => res}}, socket}
   end
 
   # Add authorization logic here as required.

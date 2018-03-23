@@ -12,14 +12,19 @@ class Game extends React.Component{
     this.state = {}
     this.channel.join()
     .receive("ok", resp => {
-      this.state.player = resp.player;
-      this.gotView(resp);
+        this.state.player = resp.player;
+        this.gotView(resp);
     })
     .receive("error", resp => { console.log("Unable to join", resp) });
-    this.channel.on("join_game", this.gotView.bind(this));
+    this.channel.on("join_game", resp => {
+      if (!this.has_opponents && this.state.game_name == resp.game.game_name) {
+      	this.gotView(resp);
+      }
+    });
     this.channel.on("guess", resp => {
-      console.log("from opponent");
-      this.gotView(resp);
+      if (this.state.game_name == resp.game.game_name) {
+        this.gotView(resp);
+      }
     });
   }
 
@@ -36,13 +41,23 @@ class Game extends React.Component{
   }
 
   gotView(view) {
+    if (view.game.player_state) {
     this.setState({
-      player: this.state.player,
-      game_list: view.game.games,
-      player_state: view.game.player_state,
-      has_opponent: view.game.has_opponent,
-      game_name: view.game.game_name
-    });
+        player: this.state.player,
+        game_list: view.game.games,
+        player_state: view.game.player_state,
+        has_opponent: view.game.has_opponent,
+        game_name: view.game.game_name
+      });
+    } else {
+      this.setState({
+        player: this.state.player,
+        game_list: view.game.games,
+        player_state: null,
+        has_opponent: false,
+        game_name: ""
+      });
+    }
     if (this.state.has_opponent) {
       this.update_track();
     }

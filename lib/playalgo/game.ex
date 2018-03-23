@@ -34,8 +34,14 @@ defmodule Playalgo.Game do
   end
 
   defp joinable_games(game, game_channel) when game_channel == "guess_your_opponent" do
-    Map.keys(game.guess_your_opponent)
+    Enum.filter Map.keys(game.guess_your_opponent), fn(x) ->
+	!has_opponent(game, game_channel, x)
+    end
   end
+
+   defp all_games(game, game_channel) when game_channel == "guess_your_opponent" do
+     Map.keys(game.guess_your_opponent)
+   end
 
   defp new_game(game, game_channel, game_name, player_name, challenge) when game_channel == "guess_your_opponent" do
      new_g = Playalgo.GuessYourOpponent.challenge(Playalgo.GuessYourOpponent.new(), player_name, challenge)
@@ -75,7 +81,7 @@ defmodule Playalgo.Game do
 
   def client_view(game, game_channel, player_name) do
     games = joinable_games(game, game_channel)
-    {game_name, player_state} = get_player_state(game, games, game_channel, player_name)
+    {game_name, player_state} = get_player_state(game, all_games(game, game_channel), game_channel, player_name)
     %{
       games: games,
       player_state: player_state,

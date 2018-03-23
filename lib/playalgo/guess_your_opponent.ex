@@ -8,7 +8,7 @@ defmodule Playalgo.GuessYourOpponent do
 				name: "",
 				score: 0,
 				guess_list: [],
-				challenge: 0
+				challenge: 0,
         clicks: 0
 			},
 			player2: %{
@@ -42,7 +42,6 @@ defmodule Playalgo.GuessYourOpponent do
   end
 
   defp get_updated_score(res, clicks) do
-    clicks = get_clicks(guesses)
     div(50, clicks)
   end
 
@@ -86,13 +85,13 @@ defmodule Playalgo.GuessYourOpponent do
     if game.player1.name != player_name do
       player1 = Map.put(game.player1, :guess_list, new_guess_list)
       player2 = Map.put(game.player2, :score, game.player2[:score] + score)
-        |> Map.put(game.player2, :clicks, clicks)
+        |> Map.put(:clicks, clicks)
       {res, Map.put(game, :player1, player1)
       |> Map.put(:player2, player2)}
     else
       player2 = Map.put(game.player2, :guess_list, new_guess_list)
       player1 = Map.put(game.player1, :score, game.player1[:score] + score)
-        |> Map.put(game.player1, :clicks, clicks)
+        |> Map.put(:clicks, clicks)
       {res, Map.put(game, :player2, player2)
       |> Map.put(:player1, player1)}
     end
