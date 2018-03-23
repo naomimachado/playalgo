@@ -9,7 +9,11 @@ defmodule PlayalgoWeb.GamesChannel do
       socket = socket
       |> assign(:game, game)
       |> assign(:name, name)
-      {:ok, %{"join" => name, "game" => Game.client_view(game, name, payload["player"]), "player" => payload["player"]}, socket}
+      if payload["type"] == "player" do
+        {:ok, %{"join" => name, "game" => Game.client_view(game, name, payload["player"]), "player" => payload["player"]}, socket}
+      else if type == "viewer"
+        {:ok, %{"join" => name, "game" => Game.viewer_view(game, name, payload["player"]), "player" => payload["player"]}, socket}
+      end
     else
       {:error, %{reason: "unauthorized"}}
     end
@@ -24,22 +28,31 @@ defmodule PlayalgoWeb.GamesChannel do
     socket = assign(socket, :game, game)
     opponent_name = Game.get_opponent_name(game, game_channel, game_name, player_name)
     if opponent_name != "" do
-      broadcast socket, "join_game", %{ "game" => Game.client_view(game, game_channel, game_name, opponent_name)}
+      broadcast socket, "join_game", %{ "game" => Game.client_view(game, game_channel, game_name, opponent_name),
+        "view" => Game.viewer_view(game, game_channel, game_name, player_name)}
     end
     {:reply, {:ok, %{ "game" => Game.client_view(game, game_channel, game_name, player_name)}}, socket}
   end
 
   def handle_in("guess", %{"game_channel" => game_channel,
     "game_name" => game_name, "player_name" => player_name, "guess" => guess}, socket) do
-    game = game = Playalgo.GameBackup.load(game_channel)
+    game = Playalgo.GameBackup.load(game_channel)
     {res, game} = Game.guess(game, game_channel, game_name, player_name, guess)
     Playalgo.GameBackup.save(socket.assigns[:name], game)
     socket = assign(socket, :game, game)
     opponent_name = Game.get_opponent_name(game, game_channel, game_name, player_name)
     if opponent_name != "" do
-      broadcast socket, "guess", %{ "game" => Game.client_view(game, game_channel, game_name, opponent_name)}
+      broadcast socket, "guess", %{ "game" => Game.client_view(game, game_channel, game_name, opponent_name),
+        "view" => Game.viewer_view(game, game_channel, game_name, player_name)}
     end
     {:reply, {:ok, %{ "game" => Game.client_view(game, game_channel, game_name, player_name), "result" => res}}, socket}
+  end
+
+  def handle_in("view_game", %{"game_channel" => game_channel, "game_name" => game_name,
+    "player_name" => player_name}, socket) do
+    game = Game.view(socket.assigns[:game], game_channel, game_name, player_name)
+    socket = assign(socket, :game, game)
+    {:reply, {:ok, %{ "view" => Game.viewer_view(game, game_channel, game_name, player_name)}}, socket}
   end
 
   # Add authorization logic here as required.
