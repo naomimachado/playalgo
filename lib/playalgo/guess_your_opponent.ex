@@ -196,8 +196,8 @@ defmodule Playalgo.GuessYourOpponent do
 
   def get_viewer_state(game, player_name) do
     %{
-      player1_state: game.player1,
-      player2_state: game.player2
+      player1_state: client_view(game, "player1"),
+      player2_state: client_view(game, "player2")
     }
   end
 end

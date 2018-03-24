@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col">
     <h1>Join a Game Channel</h1>
-    <span><input type="text" id="game-player-name" placeholder="Enter your name"/>
+    <span><input type="email" id="game-player-name" placeholder="Enter your email"/>
       <select id="joinee-type">
         <option value="player">Player</option>
         <option value="viewer">Viewer</option>

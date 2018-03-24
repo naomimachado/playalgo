@@ -43,6 +43,12 @@ defmodule Playalgo.Game do
     end
   end
 
+  defp viewable_games(game, game_channel) when game_channel == "guess_your_opponent" do
+    Enum.filter Map.keys(game.guess_your_opponent), fn(x) ->
+	has_opponent(game, game_channel, x)
+    end
+  end
+
    defp all_games(game, game_channel) when game_channel == "guess_your_opponent" do
      Map.keys(game.guess_your_opponent)
    end
@@ -100,14 +106,16 @@ defmodule Playalgo.Game do
     games = all_games(game, game_channel)
     %{
       games: games,
-      viewer_state: get_viewer_state(game, game_channel, game_name, player_name)
+      viewer_state: get_viewer_state(game, game_channel, game_name, player_name),
+      game_name: game_name,
+      winner: game.guess_your_opponent[game_name][:winner]
     }
   end
 
   def viewer_view(game, game_channel, player_name) do
-    games = all_games(game, game_channel)
+    games = viewable_games(game, game_channel)
     %{
-      games: games,
+      games: games
     }
   end
 
@@ -129,7 +137,7 @@ defmodule Playalgo.Game do
     guess_your_opponent_state = Map.put(game.guess_your_opponent, game_name, new_state)
     {res, Map.put(game, :guess_your_opponent, guess_your_opponent_state)}
   end
- 
+
   def view(game, game_channel, game_name, player_name) when game_channel == "guess_your_opponent" do
     game
   end

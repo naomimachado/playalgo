@@ -5,7 +5,13 @@ body {
   font-family: Rockwell, Courier Bold, Courier, Georgia, Times, Times New Roman, serif;
   display: block;
   background-color: #FFF8EC;
+//  background-image: url("/images/background.jpg");
+  background-size: cover;
   font-weight: normal;
+}
+
+.background{
+  opacity: 0.5;
 }
 
 .game-item {

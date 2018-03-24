@@ -13,7 +13,11 @@ class Game extends React.Component{
     this.channel.join()
     .receive("ok", resp => {
         this.state.player = resp.player;
+        if (resp.view){
+          this.gotViewer(resp);
+        } else {
         this.gotView(resp);
+      }
     })
     .receive("error", resp => { console.log("Unable to join", resp) });
     this.channel.on("join_game", resp => {
@@ -22,6 +26,10 @@ class Game extends React.Component{
       }
     });
     this.channel.on("guess", resp => {
+      console.log("opponent", resp);
+      if(this.state.view) {
+        this.gotViewer(resp);
+      }
       if (this.state.game_name == resp.game.game_name) {
         this.gotView(resp);
       }
@@ -39,6 +47,14 @@ class Game extends React.Component{
         this.gotView(resp);
       });
   }
+
+  view_game(game_name, player_name) {
+    this.channel.push("view_game", {game_channel: "guess_your_opponent", game_name: game_name, player_name: player_name})
+      .receive("ok", resp => {
+        this.gotViewer(resp);
+      });
+  }
+
 
   gotView(view) {
     if (view.game.player_state) {
@@ -74,6 +90,35 @@ class Game extends React.Component{
     console.log(this.state);
   }
 
+  gotViewer(view){
+    this.setState(
+      {
+        view: view.view
+      }
+    )
+    if(view.view.winner){
+      this.state.winner = view.view.winner;
+      this.setState(this.state);
+    }
+    if(this.state.view.viewer_state) {
+      this.update_track_viewer();
+      this.setState(this.state);
+    }
+  }
+
+  update_track_viewer() {
+
+    changePosCar(this.state.view.viewer_state.player1_state.player_state.score, "car1");
+    changePosCar(this.state.view.viewer_state.player2_state.player_state.score, "car2");
+
+    if(this.state.winner && this.state.winner == this.state.view.viewer_state.player1_state.player_state.name){
+      document.getElementById("car1").style.right = "87.5%";
+    }
+    if(this.state.winner && this.state.winner == this.state.view.viewer_state.player2_state.player_state.name){
+      document.getElementById("car2").style.right = "87.5%";
+    }
+  }
+
   update_track() {
     if (this.state.player_state.player_state.id == 1) {
       changePosCar(this.state.player_state.player_state.score, "car1");
@@ -103,8 +148,58 @@ class Game extends React.Component{
 
 
   render() {
-    if (!this.state.has_opponent) {
+    if(this.state.view){
+      if (this.state.view.viewer_state) {
+        let player1_list = _.map(this.state.view.viewer_state.player1_state.player_state.guess_list, (num, ii) => {
+          return <RenderGuessList num={num} key={ii}/>;
+        });
+        let player2_list = _.map(this.state.view.viewer_state.player2_state.player_state.guess_list, (num, ii) => {
+          return <RenderGuessList num={num} key={ii}/>;
+        });
 
+        let winner="";
+
+        if(this.state.winner){
+          winner = this.state.winner;
+        }
+
+        return(
+          <div className="rows flex-container">
+            <p>
+              <h1>&nbsp;Guess Your Opponent: Welcome viewer {this.state.player}</h1><br/>
+              <h2>&nbsp;Game name: {this.state.view.game_name}</h2>
+              <h2>&nbsp;Game Winner:{winner}</h2><br/>
+              <h3>&nbsp;Player 1: {this.state.view.viewer_state.player1_state.player_state.name}</h3><br/>
+              <h3>&nbsp;Guess List: {player1_list}</h3><br/>
+              <h3>&nbsp;Clicks: {this.state.view.viewer_state.player1_state.player_state.clicks}</h3><br/>
+              <h3>&nbsp;Score:{this.state.view.viewer_state.player1_state.player_state.score}</h3><br/>
+                <div id="car-stuff1">
+                  <img src="/images/1.png" id="car1"></img><img src="/images/finish.png" className="endline"></img><br></br>
+                  <img src="/images/2.png" id="car2"></img><img src="/images/finish.png" className="endline"></img>
+                </div>
+              <h3>&nbsp;Player 2: {this.state.view.viewer_state.player2_state.player_state.name}</h3><br/>
+              <h3>&nbsp;Guess List: {player2_list}</h3><br/>
+              <h3>&nbsp;Clicks: {this.state.view.viewer_state.player2_state.player_state.clicks}</h3><br/>
+              <h3>&nbsp;Score:{this.state.view.viewer_state.player2_state.player_state.score}</h3><br/>
+            </p>
+          </div>)
+      } else {
+
+      let view_list = _.map(this.state.view.games, (game, ii) => {
+        return <GameInstance player={this.state.player} game={game} view_game={this.view_game.bind(this)} key={ii} />;
+      });
+      return(
+        <div className="row">
+          <p>
+          <h1>&nbsp; Guess Your Opponent: Welcome {this.state.player}</h1><br/>
+          <h1>&nbsp; View Games</h1><br/>
+            {view_list}
+          </p>
+        </div>
+      )
+    }
+    } else {
+    if (!this.state.has_opponent) {
       if(!this.state.player_state){
 
       let game_list = _.map(this.state.game_list, (game, ii) => {
@@ -112,23 +207,21 @@ class Game extends React.Component{
       });
       return (
         <div className="row">
-            <h1>Guess Your Opponent: Welcome {this.state.player}</h1>
+            <h1>&nbsp; Guess Your Opponent: Welcome {this.state.player}</h1>
             <RuleList />
             <GameInfo />
           <GuessOpponentGame player={this.state.player} challenge_guess_your_opponent={this.challenge_guess_your_opponent.bind(this)} />
           <p>
-            <h3>Existing Games:</h3><br/>
-            <h3>Join:</h3>
+            <h3>&nbsp; Existing Games:</h3><br/>
             { game_list }<br/>
-            <h3>Full games:(view only)</h3>
           </p>
         </div>
       )
     } else {
         return (
           <div className="row">
-              <h1>Guess Your Opponent: Welcome {this.state.player}</h1>
-              <h1 id="wait"> Waiting for player to join........</h1>
+              <h1>&nbsp; Guess Your Opponent: Welcome {this.state.player}</h1>
+              <h1 id="wait">&nbsp; Waiting for player to join........</h1>
               <RuleList />
           </div>
         )
@@ -158,6 +251,7 @@ class Game extends React.Component{
               {guesses}</p>
               <GameStats state={this.state}/>
             </div>
+            <div>Start a new Game</div>
           </div>
           <br></br>
           <div id="car-stuff1">
@@ -199,6 +293,7 @@ class Game extends React.Component{
 }
 }
 }
+}
 
 function GuessOpponentGame(params) {
   return (
@@ -215,10 +310,17 @@ function GuessOpponentGame(params) {
   }
 
   function GameInstance(params) {
+    if(params.challenge_guess_your_opponent) {
+      return (<div className="col-6 game-item" onClick={() =>
+      params.challenge_guess_your_opponent(params.game, params.player, document.getElementById("challenge").value)}>
+      Join {params.game}
+    </div>)
+  } else {
     return (<div className="col-6 game-item" onClick={() =>
-    params.challenge_guess_your_opponent(params.game, params.player, document.getElementById("challenge").value)}>
-    Join {params.game}
+    params.view_game(params.game, params.player)}>
+    View {params.game}
   </div>)
+  }
 }
 
 function RenderList(props) {
