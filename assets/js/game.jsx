@@ -37,8 +37,12 @@ class Game extends React.Component{
   }
 
   challenge_guess_your_opponent(game_name, player_name, challenge) {
-    this.channel.push("join_game", {game_channel: "guess_your_opponent", game_name: game_name, player_name: player_name, challenge: challenge})
-    .receive("ok", this.gotView.bind(this))
+    if (game_name !=""  && challenge != "") {
+      this.channel.push("join_game", {game_channel: "guess_your_opponent", game_name: game_name, player_name: player_name, challenge: challenge})
+        .receive("ok", this.gotView.bind(this))
+    } else {
+      alert("Error Message: Challenge or Player Name is empty"); 
+    }
   }
 
   get_game_guess_your_opponent(game_name, player_name) {
@@ -104,6 +108,7 @@ class Game extends React.Component{
         view: view.view
       }
     )
+    console.log(this.state.view);
     if(view.view.winner){
       this.state.winner = view.view.winner;
       this.setState(this.state);

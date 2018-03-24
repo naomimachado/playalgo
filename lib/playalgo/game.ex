@@ -116,7 +116,9 @@ defmodule Playalgo.Game do
     games = all_games(game, game_channel)
     %{
       games: games,
-      viewer_state: get_viewer_state(game, game_channel, game_name, player_name)
+      viewer_state: get_viewer_state(game, game_channel, game_name, player_name),
+      winner: game.guess_your_opponent[game_name][:winner],
+      game_name: game_name
     }
   end
 

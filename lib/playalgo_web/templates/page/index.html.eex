@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col">
     <h1>Join a Game Channel</h1>
-    <span><input type="email" id="game-player-name" placeholder="Enter your email"/>
+    <span><input type="email" id="game-player-name" placeholder="Enter your email" required/>
       <select id="joinee-type">
         <option value="player">Player</option>
         <option value="viewer">Viewer</option>
@@ -16,11 +16,15 @@
   <script>
     function join() {
       var player = document.getElementById('game-player-name').value;
-      var type = document.getElementById('joinee-type').options[document.getElementById('joinee-type').selectedIndex].value;
-      var channel = document.getElementById('game-list').options[document.getElementById('game-list').selectedIndex].value;
-      document.cookie = "player=" + player;
-      document.cookie = "type=" + type;
-      location.href='/game/' + channel;
+      if (player == "") {
+        alert("Error Message: Email cannot be empty")
+      } else {
+        var type = document.getElementById('joinee-type').options[document.getElementById('joinee-type').selectedIndex].value;
+        var channel = document.getElementById('game-list').options[document.getElementById('game-list').selectedIndex].value;
+        document.cookie = "player=" + player;
+        document.cookie = "type=" + type;
+        location.href='/game/' + channel;
+      }
     }
   </script>
 </div>
