@@ -10,7 +10,7 @@ defmodule Playalgo.GuessYourOpponent do
 				guess_list: [],
 				challenge: 0,
         clicks: 0,
-        guessed: MapSet.new
+        guessed: []
 			},
 			player2: %{
 				name: "",
@@ -18,7 +18,7 @@ defmodule Playalgo.GuessYourOpponent do
 				guess_list: [],
 				challenge: 0,
         clicks: 0,
-        guessed: MapSet.new
+        guessed: []
 			}
 		}
 	end
@@ -88,16 +88,18 @@ defmodule Playalgo.GuessYourOpponent do
       player1 = Map.put(game.player1, :guess_list, new_guess_list)
       player2 = Map.put(game.player2, :score, game.player2[:score] + score)
       player2 = Map.put(player2, :clicks, get_clicks(game, player_name) + 1)
-      map_set = game.player1.guessed
-      player2 = Map.put(player2, :guessed, MapSet.put(map_set, guess))
+      if !Enum.member?(game.player2.guessed, guess) do
+        player2 = Map.put(player2, :guessed, game.player2.guessed ++ [guess])
+      end
       {res, Map.put(game, :player1, player1)
       |> Map.put(:player2, player2)}
     else
       player2 = Map.put(game.player2, :guess_list, new_guess_list)
       player1 = Map.put(game.player1, :score, game.player1[:score] + score)
       player1 = Map.put(player1, :clicks, get_clicks(game, player_name) + 1)
-      map_set = game.player1.guessed
-      player1 = Map.put(player1, :guessed, MapSet.put(map_set, guess))
+      if !Enum.member?(game.player1.guessed, guess) do
+        player1 = Map.put(player1, :guessed, game.player1.guessed ++ [guess])
+      end
       {res, Map.put(game, :player2, player2)
       |> Map.put(:player1, player1)}
     end
@@ -117,7 +119,7 @@ defmodule Playalgo.GuessYourOpponent do
       score: player[:score],
 			guess_list: opponent_list,
       clicks: player[:clicks],
-      guessed: MapSet.to_list(player[:guessed]),
+      guessed: player[:guessed],
       id: id,
       opponent_score: opponent_score,
       opponent_name: opponent_name
