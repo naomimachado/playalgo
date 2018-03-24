@@ -376,7 +376,7 @@ function RenderGuessList(props) {
   return (
     <span className="rows">
       <span id="guess">
-        {num}
+        {num.number}(num.result)
       </span>
     </span>
   )

@@ -47,6 +47,10 @@ defmodule Playalgo.GuessYourOpponent do
     div(50, clicks)
   end
 
+  defp is_already_guessed?(guessed, guess) {
+    Enum.find(guessed, fn(x) -> guessed.number == guess end)
+  }
+
   defp guess_result(guess, target) do
     if guess == target do
       "match"
@@ -88,8 +92,8 @@ defmodule Playalgo.GuessYourOpponent do
       player1 = Map.put(game.player1, :guess_list, new_guess_list)
       player2 = Map.put(game.player2, :score, game.player2[:score] + score)
       player2 = Map.put(player2, :clicks, get_clicks(game, player_name) + 1)
-      if !Enum.member?(game.player2.guessed, guess) do
-        player2 = Map.put(player2, :guessed, game.player2.guessed ++ [guess])
+      if !is_already_guessed?(game.player2.guessed, guess) do
+        player2 = Map.put(player2, :guessed, game.player2.guessed ++ [%{number: guess, result: res}])
       end
       {res, Map.put(game, :player1, player1)
       |> Map.put(:player2, player2)}
@@ -97,8 +101,8 @@ defmodule Playalgo.GuessYourOpponent do
       player2 = Map.put(game.player2, :guess_list, new_guess_list)
       player1 = Map.put(game.player1, :score, game.player1[:score] + score)
       player1 = Map.put(player1, :clicks, get_clicks(game, player_name) + 1)
-      if !Enum.member?(game.player1.guessed, guess) do
-        player1 = Map.put(player1, :guessed, game.player1.guessed ++ [guess])
+      if !is_already_guessed?(game.player1.guessed, guess) do
+        player1 = Map.put(player1, :guessed, game.player1.guessed ++ [%{number: guess, result: res}])
       end
       {res, Map.put(game, :player2, player2)
       |> Map.put(:player1, player1)}
