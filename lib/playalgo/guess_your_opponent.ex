@@ -47,9 +47,9 @@ defmodule Playalgo.GuessYourOpponent do
     div(50, clicks)
   end
 
-  defp is_already_guessed?(guessed, guess) {
-    Enum.find(guessed, fn(x) -> guessed.number == guess end)
-  }
+  defp is_already_guessed?(guessed, guess) do
+    Enum.find(guessed, fn(x) -> x.number == guess end)
+  end
 
   defp guess_result(guess, target) do
     if guess == target do
@@ -93,7 +93,7 @@ defmodule Playalgo.GuessYourOpponent do
       player2 = Map.put(game.player2, :score, game.player2[:score] + score)
       player2 = Map.put(player2, :clicks, get_clicks(game, player_name) + 1)
       if !is_already_guessed?(game.player2.guessed, guess) do
-        player2 = Map.put(player2, :guessed, game.player2.guessed ++ [%{number: guess, result: res}])
+        player2 = Map.put(player2, :guessed, game.player2.guessed ++ [Map.new([{:number, guess}, {:result, res}])])
       end
       {res, Map.put(game, :player1, player1)
       |> Map.put(:player2, player2)}
@@ -102,7 +102,7 @@ defmodule Playalgo.GuessYourOpponent do
       player1 = Map.put(game.player1, :score, game.player1[:score] + score)
       player1 = Map.put(player1, :clicks, get_clicks(game, player_name) + 1)
       if !is_already_guessed?(game.player1.guessed, guess) do
-        player1 = Map.put(player1, :guessed, game.player1.guessed ++ [%{number: guess, result: res}])
+        player1 = Map.put(player1, :guessed, game.player1.guessed ++ [Map.new([{:number, guess}, {:result, res}])])
       end
       {res, Map.put(game, :player2, player2)
       |> Map.put(:player1, player1)}
@@ -110,8 +110,8 @@ defmodule Playalgo.GuessYourOpponent do
   end
 
 	defp get_guess_list(challenge) do
-		rand_seq = Enum.sort(Playalgo.RandSequence.get_rand_seq(90, Enum.random(0..challenge),
-		  Enum.random((challenge + 1)..(challenge + 635)), challenge))
+		rand_seq = Enum.sort(Playalgo.RandSequence.get_rand_seq(105, Enum.random(0..challenge),
+		  Enum.random((challenge + 1)..(challenge + 835)), challenge))
 		Enum.map rand_seq, fn(x) ->
 		  %{number: x, click: false}
 		end
