@@ -41,6 +41,11 @@ class Game extends React.Component{
     .receive("ok", this.gotView.bind(this))
   }
 
+  get_game_guess_your_opponent(game_name, player_name) {
+    this.channel.push("join_game", {game_channel: "guess_your_opponent", game_name: game_name, player_name: player_name})
+    .receive("ok", this.gotView.bind(this))
+  }
+
   guess_guess_your_opponent(game_name, player_name, guess) {
     this.channel.push("guess", {game_channel: "guess_your_opponent", game_name: game_name, player_name: player_name, guess: guess})
       .receive("ok", resp => {
@@ -61,6 +66,8 @@ class Game extends React.Component{
     this.setState({
         player: this.state.player,
         game_list: view.game.games,
+
+        my_games: view.game.my_games,
         player_state: view.game.player_state,
         has_opponent: view.game.has_opponent,
         game_name: view.game.game_name
@@ -69,6 +76,7 @@ class Game extends React.Component{
       this.setState({
         player: this.state.player,
         game_list: view.game.games,
+        my_games: view.game.my_games,
         player_state: null,
         has_opponent: false,
         game_name: ""
@@ -205,6 +213,11 @@ class Game extends React.Component{
       let game_list = _.map(this.state.game_list, (game, ii) => {
         return <GameInstance player={this.state.player} game={game} challenge_guess_your_opponent={this.challenge_guess_your_opponent.bind(this)} key={ii} />;
       });
+
+      let my_game_list = _.map(this.state.my_games, (game, ii) => {
+        return <GameInstance player={this.state.player} game={game} get_game_guess_your_opponent={this.get_game_guess_your_opponent.bind(this)} key={ii} />;
+      });
+   
       return (
         <div className="row">
             <h1>&nbsp; Guess Your Opponent: Welcome {this.state.player}</h1>
@@ -212,6 +225,9 @@ class Game extends React.Component{
             <GameInfo />
           <GuessOpponentGame player={this.state.player} challenge_guess_your_opponent={this.challenge_guess_your_opponent.bind(this)} />
           <p>
+            <h3>&nbsp; My Games:</h3>
+            { my_game_list }
+          <br></br>
             <h3>&nbsp; Existing Games:</h3><br/>
             { game_list }<br/>
           </p>
@@ -251,7 +267,7 @@ class Game extends React.Component{
               {guesses}</p>
               <GameStats state={this.state}/>
             </div>
-            <div>Start a new Game</div>
+            <input type="button" onClick={() => window.location.reload()} value="New Game" />
           </div>
           <br></br>
           <div id="car-stuff1">
@@ -270,19 +286,17 @@ class Game extends React.Component{
               &nbsp;Welcome player:<span>{this.state.player}</span>
           </div>
           <div className="cols cols-3">
-            <pre/>&nbsp;List of Numbers:<br></br>
+            &nbsp;List of Numbers:<br></br>
             <ul>{nums}</ul>
-          </div><br></br>
+          </div>
           <div>
-            <pre/>&nbsp;Guessed Numbers:<br/><br/>
+            &nbsp;Guessed Numbers:
             <ul>{guesses}</ul>
           </div>
-          <br></br>
           <div>
-          <pre/>&nbsp;Clue:<b>{this.state.result}</b></div>
+          &nbsp;Clue:<b>{this.state.result}</b></div>
           </p>
         </div>
-        <br></br>
         <div id="car-stuff">
           <img src="/images/1.png" id="car1"></img><img src="/images/finish.png" className="endline"></img><br></br>
           <img src="/images/2.png" id="car2"></img><img src="/images/finish.png" className="endline"></img>
@@ -315,11 +329,16 @@ function GuessOpponentGame(params) {
       params.challenge_guess_your_opponent(params.game, params.player, document.getElementById("challenge").value)}>
       Join {params.game}
     </div>)
+  } else if (params.get_game_guess_your_opponent) {
+    return (<div className="col-6 game-item" onClick={() =>
+      params.get_game_guess_your_opponent(params.game, params.player)}>
+      Join {params.game}
+    </div>)
   } else {
     return (<div className="col-6 game-item" onClick={() =>
     params.view_game(params.game, params.player)}>
     View {params.game}
-  </div>)
+    </div>)
   }
 }
 

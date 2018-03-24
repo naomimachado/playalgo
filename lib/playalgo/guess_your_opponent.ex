@@ -98,8 +98,8 @@ defmodule Playalgo.GuessYourOpponent do
   end
 
 	defp get_guess_list(challenge) do
-		rand_seq = Enum.sort(Playalgo.RandSequence.get_rand_seq(40, Enum.random(0..challenge),
-		  Enum.random((challenge + 1)..(challenge + 235)), challenge))
+		rand_seq = Enum.sort(Playalgo.RandSequence.get_rand_seq(90, Enum.random(0..challenge),
+		  Enum.random((challenge + 1)..(challenge + 635)), challenge))
 		Enum.map rand_seq, fn(x) ->
 		  %{number: x, click: false}
 		end
@@ -161,6 +161,10 @@ defmodule Playalgo.GuessYourOpponent do
 
   def has_opponent(game) do
     game.player1.name != "" && game.player2.name != ""
+  end
+
+  def has_player(game, player_name) do
+    game.player1.name == player_name || game.player2.name == player_name
   end
 
   def get_opponent_name(game, player_name) do

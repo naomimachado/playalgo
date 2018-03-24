@@ -36,6 +36,12 @@ defmodule Playalgo.Game do
   defp get_viewer_state(game, game_channel, game_name, player_name) when game_channel == "guess_your_opponent" do
     Playalgo.GuessYourOpponent.get_viewer_state(game.guess_your_opponent[game_name], player_name)
   end
+  
+  defp player_games(game, game_channel, player_name) when game_channel == "guess_your_opponent" do
+    Enum.filter Map.keys(game.guess_your_opponent), fn(x) ->
+        has_player(game, game_channel, x, player_name)
+    end
+  end
 
   defp joinable_games(game, game_channel) when game_channel == "guess_your_opponent" do
     Enum.filter Map.keys(game.guess_your_opponent), fn(x) ->
@@ -43,15 +49,9 @@ defmodule Playalgo.Game do
     end
   end
 
-  defp viewable_games(game, game_channel) when game_channel == "guess_your_opponent" do
-    Enum.filter Map.keys(game.guess_your_opponent), fn(x) ->
-	has_opponent(game, game_channel, x)
-    end
+  defp all_games(game, game_channel) when game_channel == "guess_your_opponent" do
+    Map.keys(game.guess_your_opponent)
   end
-
-   defp all_games(game, game_channel) when game_channel == "guess_your_opponent" do
-     Map.keys(game.guess_your_opponent)
-   end
 
   defp new_game(game, game_channel, game_name, player_name, challenge) when game_channel == "guess_your_opponent" do
      new_g = Playalgo.GuessYourOpponent.challenge(Playalgo.GuessYourOpponent.new(), player_name, challenge)
@@ -61,6 +61,14 @@ defmodule Playalgo.Game do
   defp cur_game(game, game_channel, game_name, player_name, challenge) when game_channel == "guess_your_opponent" do
     cur_g = Playalgo.GuessYourOpponent.challenge(game.guess_your_opponent[game_name], player_name, challenge)
     Map.put(game.guess_your_opponent, game_name, cur_g)
+  end
+
+  def has_player(game, game_channel, game_name, player_name) when game_channel == "guess_your_opponent" do
+    if game_name == "" do
+      false
+    else
+      Playalgo.GuessYourOpponent.has_player(game.guess_your_opponent[game_name], player_name)
+    end
   end
 
   def has_opponent(game, game_channel, game_name) when game_channel == "guess_your_opponent" do
@@ -83,6 +91,7 @@ defmodule Playalgo.Game do
     games = joinable_games(game, game_channel)
     %{
       games: games,
+      my_games: player_games(game, game_channel, player_name),
       has_opponent: has_opponent(game, game_channel, game_name),
       player_state: get_player_game_state(game, game_channel, game_name, player_name),
       game_name: game_name,
@@ -92,13 +101,14 @@ defmodule Playalgo.Game do
 
   def client_view(game, game_channel, player_name) do
     games = joinable_games(game, game_channel)
-    {game_name, player_state} = get_player_state(game, all_games(game, game_channel), game_channel, player_name)
+    #{game_name, player_state} = get_player_state(game, all_games(game, game_channel), game_channel, player_name)
     %{
       games: games,
-      player_state: player_state,
-      has_opponent: has_opponent(game, game_channel, game_name),
-      game_name: game_name,
-      winner: game.guess_your_opponent[game_name][:winner]
+      my_games: player_games(game, game_channel, player_name),
+      player_state: nil,#player_state,
+      has_opponent: false,#has_opponent(game, game_channel, game_name),
+      game_name: "",#game_name,
+      winner: nil#game.guess_your_opponent[game_name][:winner]
     }
   end
 
@@ -106,16 +116,14 @@ defmodule Playalgo.Game do
     games = all_games(game, game_channel)
     %{
       games: games,
-      viewer_state: get_viewer_state(game, game_channel, game_name, player_name),
-      game_name: game_name,
-      winner: game.guess_your_opponent[game_name][:winner]
+      viewer_state: get_viewer_state(game, game_channel, game_name, player_name)
     }
   end
 
   def viewer_view(game, game_channel, player_name) do
-    games = viewable_games(game, game_channel)
+    games = all_games(game, game_channel)
     %{
-      games: games
+      games: games,
     }
   end
 
@@ -137,7 +145,7 @@ defmodule Playalgo.Game do
     guess_your_opponent_state = Map.put(game.guess_your_opponent, game_name, new_state)
     {res, Map.put(game, :guess_your_opponent, guess_your_opponent_state)}
   end
-
+ 
   def view(game, game_channel, game_name, player_name) when game_channel == "guess_your_opponent" do
     game
   end

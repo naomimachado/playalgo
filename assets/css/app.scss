@@ -32,7 +32,7 @@ body {
 }
 
 #num{
-  padding: 15px;
+  padding: 5px;
   background-color: orange;
   border: 2px solid grey;
   box-shadow: 10px 5px 5px grey;
@@ -46,7 +46,6 @@ body {
 }
 
 #guess{
-  padding: 15px;
   background-color: powderblue;
   border: 2px solid grey;
   box-shadow: 10px 5px 5px grey;
@@ -54,11 +53,11 @@ body {
 }
 
 ul{
-  columns: 10;
+  columns: 15;
 }
 
 li{
-  padding: 25px;
+  padding: 5px;
   list-style-type: none;
 }
 

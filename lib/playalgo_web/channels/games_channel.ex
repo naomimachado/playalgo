@@ -38,6 +38,19 @@ defmodule PlayalgoWeb.GamesChannel do
     {:reply, {:ok, %{ "game" => Game.client_view(game, game_channel, game_name, player_name)}}, socket}
   end
 
+  def handle_in("join_game", %{"game_channel" => game_channel, "game_name" => game_name,
+    "player_name" => player_name}, socket) do
+    game = Playalgo.GameBackup.load(game_channel)
+    Playalgo.GameBackup.save(socket.assigns[:name], game)
+    socket = assign(socket, :game, game)
+    opponent_name = Game.get_opponent_name(game, game_channel, game_name, player_name)
+    if opponent_name != "" do
+      broadcast socket, "join_game", %{ "game" => Game.client_view(game, game_channel, game_name, opponent_name),
+        "view" => Game.viewer_view(game, game_channel, game_name, player_name)}
+    end
+    {:reply, {:ok, %{ "game" => Game.client_view(game, game_channel, game_name, player_name)}}, socket}
+  end
+
   def handle_in("guess", %{"game_channel" => game_channel,
     "game_name" => game_name, "player_name" => player_name, "guess" => guess}, socket) do
     game = Playalgo.GameBackup.load(game_channel)
