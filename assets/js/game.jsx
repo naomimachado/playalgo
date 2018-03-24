@@ -161,7 +161,10 @@ class Game extends React.Component{
 
 
   render() {
+    //viewer stuff
     if(this.state.view){
+
+      //when a game is selected to view
       if (this.state.view.viewer_state) {
         let player1_list = _.map(this.state.view.viewer_state.player1_state.player_state.guess_list, (num, ii) => {
           return <RenderGuessList num={num} key={ii}/>;
@@ -198,65 +201,71 @@ class Game extends React.Component{
           </div>)
       } else {
 
-      let view_list = _.map(this.state.view.games, (game, ii) => {
-        return <GameInstance player={this.state.player} game={game} view_game={this.view_game.bind(this)} key={ii} />;
-      });
-      return(
-        <div className="row">
-          <p>
-          <h1>&nbsp; Guess Your Opponent: Welcome {this.state.player}</h1><br/>
-          <h1>&nbsp; View Games</h1><br/>
-            {view_list}
-          </p>
-        </div>
-      )
-    }
+        //display games to view
+        let view_list = _.map(this.state.view.games, (game, ii) => {
+          return <GameInstance player={this.state.player} game={game} view_game={this.view_game.bind(this)} key={ii} />;
+        });
+
+        return(
+          <div className="row">
+            <p>
+              <h1>&nbsp; Guess Your Opponent: Welcome {this.state.player}</h1><br/>
+              <h1>&nbsp; View Games</h1><br/>
+              {view_list}
+            </p>
+          </div>)
+      }
     } else {
+
+      //player stuff
+
+      //when player has no opponent
     if (!this.state.has_opponent) {
       if(!this.state.player_state){
 
-      let game_list = _.map(this.state.game_list, (game, ii) => {
-        return <GameInstance player={this.state.player} game={game} challenge_guess_your_opponent={this.challenge_guess_your_opponent.bind(this)} key={ii} />;
-      });
+        let game_list = _.map(this.state.game_list, (game, ii) => {
+          return <GameInstance player={this.state.player} game={game} challenge_guess_your_opponent={this.challenge_guess_your_opponent.bind(this)} key={ii} />;
+        });
 
-      let my_game_list = _.map(this.state.my_games, (game, ii) => {
-        return <GameInstance player={this.state.player} game={game} get_game_guess_your_opponent={this.get_game_guess_your_opponent.bind(this)} key={ii} />;
-      });
+        let my_game_list = _.map(this.state.my_games, (game, ii) => {
+          return <GameInstance player={this.state.player} game={game} get_game_guess_your_opponent={this.get_game_guess_your_opponent.bind(this)} key={ii} />;
+        });
 
-      return (
-        <div className="row">
+        return (
+          <div className="row">
             <h1>&nbsp; Guess Your Opponent: Welcome {this.state.player}</h1>
             <RuleList />
             <GameInfo />
-          <GuessOpponentGame player={this.state.player} challenge_guess_your_opponent={this.challenge_guess_your_opponent.bind(this)} />
-          <p>
-            <h3>&nbsp; My Games:</h3>
-            { my_game_list }
-          <br></br>
-            <h3>&nbsp; Existing Games:</h3><br/>
-            { game_list }<br/>
-          </p>
-        </div>
-      )
-    } else {
-        return (
-          <div className="row">
+            <GuessOpponentGame player={this.state.player} challenge_guess_your_opponent={this.challenge_guess_your_opponent.bind(this)} />
+            <p>
+              <h3>&nbsp; My Games:</h3>
+              { my_game_list }
+              <br></br>
+              <h3>&nbsp; Existing Games:</h3><br/>
+              { game_list }<br/>
+            </p>
+          </div>)
+        } else {
+
+          //when player has created a game and waiting for other player to join
+          return (
+            <div className="row">
               <h1>&nbsp; Guess Your Opponent: Welcome {this.state.player}</h1>
               <h1 id="wait">&nbsp; Waiting for player to join........</h1>
               <RuleList />
-          </div>
-        )
-      }
+            </div>)
+          }
     } else {
       let nums = _.map(this.state.player_state.player_state.guess_list, (num, ii) => {
         return <RenderList num={num}  game_name={this.state.game_name}
-  player_name={this.state.player} guess_guess_your_opponent={this.guess_guess_your_opponent.bind(this)} key={ii}/>;
-      });
+          player_name={this.state.player} guess_guess_your_opponent={this.guess_guess_your_opponent.bind(this)} key={ii}/>;
+        });
 
-      let guesses = _.map(this.state.player_state.player_state.guess_list, (num, ii) => {
-        return <RenderGuessList num={num} key={ii}/>;
-      });
+        let guesses = _.map(this.state.player_state.player_state.guess_list, (num, ii) => {
+          return <RenderGuessList num={num} key={ii}/>;
+        });
 
+        //when a player wins
       if( this.state.winner){
         return (
           <div className="rows flex-container">
@@ -283,6 +292,7 @@ class Game extends React.Component{
         </div>
         )
       } else {
+        //when both players are playing
       return (
         <div className="rows flex-container">
           <div id="game-stuff">
@@ -337,7 +347,7 @@ function GuessOpponentGame(params) {
   } else if (params.get_game_guess_your_opponent) {
     return (<div className="col-6 game-item" onClick={() =>
       params.get_game_guess_your_opponent(params.game, params.player)}>
-      Join {params.game}
+      Go to {params.game}
     </div>)
   } else {
     return (<div className="col-6 game-item" onClick={() =>
