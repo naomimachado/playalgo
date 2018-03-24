@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 export default function game_init(root, channel) {
+  document.body.style.backgroundImage = "";
   ReactDOM.render(<Game channel={channel} />, root);
 }
 
@@ -41,7 +42,7 @@ class Game extends React.Component{
       this.channel.push("join_game", {game_channel: "guess_your_opponent", game_name: game_name, player_name: player_name, challenge: challenge})
         .receive("ok", this.gotView.bind(this))
     } else {
-      alert("Error Message: Challenge or Player Name is empty"); 
+      alert("Error Message: Challenge or Player Name is empty");
     }
   }
 
@@ -70,7 +71,6 @@ class Game extends React.Component{
     this.setState({
         player: this.state.player,
         game_list: view.game.games,
-
         my_games: view.game.my_games,
         player_state: view.game.player_state,
         has_opponent: view.game.has_opponent,
@@ -222,7 +222,7 @@ class Game extends React.Component{
       let my_game_list = _.map(this.state.my_games, (game, ii) => {
         return <GameInstance player={this.state.player} game={game} get_game_guess_your_opponent={this.get_game_guess_your_opponent.bind(this)} key={ii} />;
       });
-   
+
       return (
         <div className="row">
             <h1>&nbsp; Guess Your Opponent: Welcome {this.state.player}</h1>
@@ -263,15 +263,15 @@ class Game extends React.Component{
             <p>
             <div id="game-stuff">
               <div className="cols">
-                <pre/>Winner is:<span>{this.state.winner}</span>
+                <pre/>&nbsp;Winner is:<span>{this.state.winner}</span>
             </div>
             <div>
-              Stats:<br></br>
-            <p>Guesses in this round:
+              &nbsp;Stats:<br></br>
+            <p>&nbsp;Guesses in this round:
               <br/>
               {guesses}</p>
               <GameStats state={this.state}/>
-            </div>
+            </div>&nbsp;
             <input type="button" onClick={() => window.location.reload()} value="New Game" />
           </div>
           <br></br>
