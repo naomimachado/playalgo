@@ -313,7 +313,19 @@ class Game extends React.Component{
           </p>
         </div>
         <div id="car-stuff">
-          <img src="/images/1.png" id="car1"></img><img src="/images/finish.png" className="endline"></img><br></br>
+          <img src="/images/1.png" id="car1"></img><img src="/images/finish.png" className="endline"></img>
+          <div className="space">
+            <div className="line move"></div><div className=" line move1"></div>
+            <div className="line move"></div><div className=" line move1"></div>
+            <div className="line move"></div><div className=" line move1"></div>
+            <div className="line move"></div><div className=" line move1"></div>
+            <div className="line move"></div><div className=" line move1"></div>
+            <div className="line move"></div><div className=" line move1"></div>
+            <div className="line move"></div><div className=" line move1"></div>
+            <div className="line move"></div><div className=" line move1"></div>
+            <div className="line move"></div><div className=" line move1"></div>
+            <div className="line move"></div><div className=" line move1"></div>
+          </div>
           <img src="/images/2.png" id="car2"></img><img src="/images/finish.png" className="endline"></img>
         </div>
       </div>
