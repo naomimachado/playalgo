@@ -246,7 +246,6 @@ class Game extends React.Component{
             </p>
           </div>)
         } else {
-
           //when player has created a game and waiting for other player to join
           return (
             <div className="row">
@@ -261,7 +260,7 @@ class Game extends React.Component{
           player_name={this.state.player} guess_guess_your_opponent={this.guess_guess_your_opponent.bind(this)} key={ii}/>;
         });
 
-        let guesses = _.map(this.state.player_state.player_state.guess_list, (num, ii) => {
+        let guesses = _.map(this.state.player_state.player_state.guessed, (num, ii) => {
           return <RenderGuessList num={num} key={ii}/>;
         });
 
@@ -373,22 +372,14 @@ function RenderList(props) {
 }
 
 function RenderGuessList(props) {
-  let listData = props.num;
-  let num = listData.number;
-  let click = listData.click;
-
-  if(click === true){
-    return (
-      <span className="rows">
-        <span id="guess">
-          {num}
-        </span>
+  let num = props.num;
+  return (
+    <span className="rows">
+      <span id="guess">
+        {num}
       </span>
-    )
-  }
-  else{
-    return null;
-  }
+    </span>
+  )
 }
 
 function changePosCar(value, car_id) {
