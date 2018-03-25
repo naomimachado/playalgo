@@ -4,8 +4,6 @@ body {
   font-size: 20pt;
   font-family: Rockwell, Courier Bold, Courier, Georgia, Times, Times New Roman, serif;
   display: block;
-  background-color: #FFF8EC;
-  background-size: cover;
   font-weight: normal;
 }
 
@@ -112,4 +110,12 @@ li{
   background-color: black;
   background-image: url("/images/road1.png");
   background-size: contain;
+}
+
+.btn{
+  font-size: 25px;
+}
+
+.inline{
+  float: left;
 }
