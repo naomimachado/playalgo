@@ -217,6 +217,10 @@ class Game extends React.Component{
           return <GameInstance player={this.state.player} game={game} view_game={this.view_game.bind(this)} key={ii} />;
         });
 
+        let leader_list = _.map(this.state.leaderboard, (leader, ii) => {
+          return <LeaderBoard leader={leader} rank={leader.rank} key={ii} />;
+        });
+
         return(
           <div className="row">
             <p>
@@ -224,6 +228,32 @@ class Game extends React.Component{
               <h1>&nbsp; View Games</h1><br/>
               {view_list}
             </p>
+            <table className="inline1 table-style-three">
+              <h2>Leader Board</h2>
+              <tbody>
+                <tr>
+                  <th>
+                    Rank
+                  </th>
+                  <th>
+                    Player Name
+                  </th>
+                  <th>
+                    Games
+                  </th>
+                  <th>
+                    Wins
+                  </th>
+                  <th>
+                    Score
+                  </th>
+                  <th>
+                    Points
+                  </th>
+                </tr>
+                {leader_list}
+              </tbody>
+            </table>
           </div>)
       }
     } else {
@@ -288,6 +318,9 @@ class Game extends React.Component{
                   </th>
                   <th>
                     Wins
+                  </th>
+                  <th>
+                    Score
                   </th>
                   <th>
                     Points
@@ -572,6 +605,9 @@ function LeaderBoard(params) {
       </td>
       <td>
         {value.wins}
+      </td>
+      <td>
+        {value.score}
       </td>
       <td>
         {value.points}

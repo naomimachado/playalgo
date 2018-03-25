@@ -9,7 +9,6 @@ defmodule PlayalgoWeb.GamesChannel do
 
   defp form_leaderboard_response(leaderboard, new_leaderboard, rank, rem) do
     player = (hd leaderboard)
-    IO.inspect player
     key = elem(player, 0)
     val = elem(player, 1)
     new = Map.put_new(%{}, key, val)
