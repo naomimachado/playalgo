@@ -3,13 +3,21 @@ defmodule PlayalgoWeb.GamesChannel do
 
   alias Playalgo.Game
 
+  defp form_leaderboard_response(leaderboard) do
+    Enum.map leaderboard, fn(player) ->
+      key = elem(player, 0)
+      val = elem(player, 1)
+      Map.put_new(%{}, key, val)
+    end
+  end
+
   def join("games:" <> name, payload, socket) do
     if authorized?(payload) do
       game = Playalgo.GameBackup.load(name) || Game.new()
       socket = socket
       |> assign(:game, game)
       |> assign(:name, name)
-      
+
       response = nil
       if payload["type"] == "player" do
         response = {:ok, %{"join" => name, "game" => Game.client_view(game, name, payload["player"]), "player" => payload["player"]}, socket}
@@ -70,6 +78,13 @@ defmodule PlayalgoWeb.GamesChannel do
     game = Game.view(socket.assigns[:game], game_channel, game_name, player_name)
     socket = assign(socket, :game, game)
     {:reply, {:ok, %{ "view" => Game.viewer_view(game, game_channel, game_name, player_name)}}, socket}
+  end
+
+  def handle_in("leaderboard", %{"game_channel" => game_channel}, socket) do
+    game = Playalgo.GameBackup.load(game_channel) || Game.new()
+    socket = assign(socket, :game, game)
+    leaderboard = form_leaderboard_response(Game.leaderboard(game, game_channel))
+    {:reply, {:ok, %{ "leaderboard" => leaderboard}}, socket}
   end
 
   # Add authorization logic here as required.

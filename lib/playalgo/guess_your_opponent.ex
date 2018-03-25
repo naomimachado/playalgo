@@ -180,6 +180,14 @@ defmodule Playalgo.GuessYourOpponent do
     game.player1.name == player_name || game.player2.name == player_name
   end
 
+  def get_player_score(game, player_name) do
+    if game.player1.name == player_name do
+      game.player1.score
+    else
+      game.player2.score
+    end
+  end
+
   def get_opponent_name(game, player_name) do
     if game.player1.name != player_name do
       game.player1.name

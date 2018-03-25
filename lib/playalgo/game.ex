@@ -1,5 +1,6 @@
 defmodule Playalgo.Game do
   alias Playalgo.GuessYourOpponent
+  alias Playalgo.Leaderboard
 
   def new do
     %{
@@ -36,7 +37,7 @@ defmodule Playalgo.Game do
   defp get_viewer_state(game, game_channel, game_name, player_name) when game_channel == "guess_your_opponent" do
     Playalgo.GuessYourOpponent.get_viewer_state(game.guess_your_opponent[game_name], player_name)
   end
-  
+
   defp player_games(game, game_channel, player_name) when game_channel == "guess_your_opponent" do
     Enum.filter Map.keys(game.guess_your_opponent), fn(x) ->
         has_player(game, game_channel, x, player_name)
@@ -147,8 +148,13 @@ defmodule Playalgo.Game do
     guess_your_opponent_state = Map.put(game.guess_your_opponent, game_name, new_state)
     {res, Map.put(game, :guess_your_opponent, guess_your_opponent_state)}
   end
- 
+
   def view(game, game_channel, game_name, player_name) when game_channel == "guess_your_opponent" do
     game
+  end
+
+  def leaderboard(game, game_channel) when game_channel == "guess_your_opponent" do
+    leaderboard = Playalgo.Leaderboard.leaderboard(game, game_channel, all_games(game, game_channel))
+    Enum.reverse(leaderboard)
   end
 end
