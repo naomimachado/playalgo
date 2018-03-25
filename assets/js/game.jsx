@@ -13,22 +13,21 @@ class Game extends React.Component{
     this.state = {}
     this.channel.join()
     .receive("ok", resp => {
-        this.state.player = resp.player;
-        if (resp.view){
-          this.gotViewer(resp);
-        } else {
-        this.gotView(resp);
-      }
+       this.state.player = resp.player;
+       if (resp.view){
+         this.gotViewer(resp);
+       } else {
+         this.gotView(resp);
+       }
+       this.leaderboard();
     })
     .receive("error", resp => { console.log("Unable to join", resp) });
     this.channel.on("join_game", resp => {
       if (!this.has_opponents && this.state.game_name == resp.game.game_name) {
       	this.gotView(resp);
-        this.leaderboard();
       }
     });
     this.channel.on("guess", resp => {
-      console.log("opponent", resp);
       if(this.state.view) {
         this.gotViewer(resp);
       }
@@ -67,6 +66,7 @@ class Game extends React.Component{
   }
 
   leaderboard() {
+    console.log("leaderboard");
     this.channel.push("leaderboard", {game_channel: "guess_your_opponent"})
       .receive("ok", resp => {
         this.state.leaderboard = resp.leaderboard

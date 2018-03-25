@@ -154,6 +154,7 @@ defmodule Playalgo.Game do
   end
 
   def leaderboard(game, game_channel) when game_channel == "guess_your_opponent" do
-    Playalgo.Leaderboard.leaderboard(game, game_channel, all_games(game, game_channel))
+    leaderboard = Playalgo.Leaderboard.leaderboard(game, game_channel, all_games(game, game_channel))
+    Enum.reverse(leaderboard)
   end
 end

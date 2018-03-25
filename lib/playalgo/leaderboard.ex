@@ -1,7 +1,7 @@
 defmodule Playalgo.Leaderboard do
 
-alias Playalgo.GuessYourOpponent do
-	defp new_players() do
+alias Playalgo.GuessYourOpponent
+	defp new_player() do
 		Map.new([{:player_name, ""}, {:played, 0}, {:wins, 0}, {:score, 0}, {:points, 0}])
 	end
 
@@ -20,11 +20,12 @@ alias Playalgo.GuessYourOpponent do
 	end
 
 	defp player_score(game, game_channel, game_name, player_name) do
-		Playalgo.GuessYourOpponent.get_player_score(game.guess_your_opponent[game], player_name)
+		Playalgo.GuessYourOpponent.get_player_score(game.guess_your_opponent[game_name], player_name)
 	end
 
 	defp update_player(leaderboard, game, game_channel, game_name, player_name) when game_channel == "guess_your_opponent" do
 		player_state = leaderboard[player_name]
+                player_state = Map.put(player_state, :player_name, player_name)
 		player_state = Map.put(player_state, :played, player_state[:played] + 1)
 		if is_winner?(game, game_channel, game_name, player_name) do
 			player_state = Map.put(player_state, :wins, player_state[:wins] + 1)
@@ -34,8 +35,14 @@ alias Playalgo.GuessYourOpponent do
 		total_points = get_points(player_state[:played], player_state[:wins], player_state[:score])
 		player_state = Map.put(player_state, :points, total_points)
 		leaderboard
-		|> Map.put(:player_name, player_state)
+		|> Map.put(player_name, player_state)
 	end
+
+	defp rank_by_points(leaderboard) do
+          Enum.sort_by leaderboard, fn player ->
+            elem(player, 1)[:points]
+          end
+        end
 
 	def create_leaderboard(game, game_names, game_channel,
 		leaderboard, remaining_players) when game_channel == "guess_your_opponent"  and remaining_players == 0 do
@@ -45,20 +52,25 @@ alias Playalgo.GuessYourOpponent do
 	def create_leaderboard(game, game_names, game_channel,
 		leaderboard, remaining_games) when game_channel == "guess_your_opponent" do
 		game_name = (hd game_names)
-		player1_state = game.guess_your_opponent[game_name].player1
-		player2_state = game.guess_your_opponent[game_name].player2
-		if !Map.has_key(leaderboard, player1_state.name) do
-			leaderboard = add_player(leaderboard, player1_state.name)
-		end
-		if !Map.has_key(leaderboard, player2_state.name) do
-			leaderboard = add_player(leaderboard, player2_state.name)
-		end
-		leaderboard = update_player(leaderboard, game, game_channel, game_name, player1_state.name)
-		leaderboard = update_player(leaderboard, game, game_channel, game_name, player2_state.name)
-		create_leaderboard(game, (tl game_names), game_channel, leaderboard, remaining_games - 1)
+                if Playalgo.GuessYourOpponent.has_opponent(game.guess_your_opponent[game_name]) do
+		  player1_state = game.guess_your_opponent[game_name][:player1]
+		  player2_state = game.guess_your_opponent[game_name][:player2]
+		  if !Map.has_key?(leaderboard, player1_state.name) do
+	            leaderboard = add_player(leaderboard, player1_state.name)
+		  end
+		  if !Map.has_key?(leaderboard, player2_state.name) do
+	            leaderboard = add_player(leaderboard, player2_state.name)
+		  end
+		  leaderboard = update_player(leaderboard, game, game_channel, game_name, player1_state.name)
+		  leaderboard = update_player(leaderboard, game, game_channel, game_name, player2_state.name)
+		  create_leaderboard(game, (tl game_names), game_channel, leaderboard, remaining_games - 1)
+               else
+		 leaderboard
+               end
 	end
 
-	def game_leaderboard(game, game_channel, game_names) when game_channel == "guess_your_opponent" do
+	def leaderboard(game, game_channel, game_names) when game_channel == "guess_your_opponent" do
 		create_leaderboard(game, game_names, game_channel, %{}, length(game_names))
+		|> rank_by_points()
 	end
 end
