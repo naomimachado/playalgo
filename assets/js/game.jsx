@@ -50,7 +50,7 @@ class Game extends React.Component{
       this.channel.push("join_game", {game_channel: "guess_your_opponent", game_name: game_name, player_name: player_name, challenge: challenge})
         .receive("ok", this.gotView.bind(this))
     } else {
-      alert("Error Message: Challenge or Player Name is empty");
+      alert("Error Message: Challenge or Player Name is empty/ Values are incorrect");
     }
   }
 
@@ -207,6 +207,7 @@ class Game extends React.Component{
               <h3>&nbsp;Guess List: {player2_list}</h3>
               <h3>&nbsp;Clicks: {this.state.view.viewer_state.player2_state.player_state.clicks}</h3>
               <h3>&nbsp;Score:{this.state.view.viewer_state.player2_state.player_state.score}</h3>
+              <input type="button" className="btn btn-primary gradient" onClick={() => window.location.reload()} value="View Other Games" />
           </div>)
       } else {
 
@@ -258,10 +259,10 @@ class Game extends React.Component{
         return (
           <div className="row flex-container">
             <h1>&nbsp; Guess Your Opponent: Welcome {this.state.player}</h1>
-            <table className="inline disp-table">
+            <table className="inline disp-table1">
               <tbody>
                 <tr>
-                  <td><button onClick={this.toggleHidden.bind(this)} className="btn btn-primary" >
+                  <td><button onClick={this.toggleHidden.bind(this)} className="btn btn-primary gradient" >
                     Click to View Rules
                   </button>
                 {!this.state.isHidden && <RuleList />}</td>
@@ -288,6 +289,10 @@ class Game extends React.Component{
           </div>)
         } else {
           //when player has created a game and waiting for other player to join
+          let leader_list1 = _.map(this.state.leaderboard, (leader, ii) => {
+            return <LeaderBoard leader={leader} rank={leader.rank} key={ii} />;
+          });
+
           return (
             <div className="row flex-container">
               <h1>&nbsp; Guess Your Opponent: Welcome {this.state.player}</h1>
@@ -295,6 +300,13 @@ class Game extends React.Component{
               <div  className="disp-table">
                 <RuleList />
               </div>
+              <h2 className="inline2">Leader Board</h2>
+              <table className="inline1 table-style-three">
+                <tbody>
+                  <Heading />
+                  {leader_list1}
+                </tbody>
+              </table>
             </div>)
           }
     } else {
@@ -325,7 +337,7 @@ class Game extends React.Component{
               {guesses}
               <GameStats state={this.state}/>
             </div>&nbsp;
-            <input type="button" className="btn btn-primary" onClick={() => window.location.reload()} value="New Game" />
+            <input type="button" className="btn btn-primary gradient" onClick={() => window.location.reload()} value="New Game" />
           </div>
         </div>
         )
@@ -362,9 +374,9 @@ function GuessOpponentGame(params) {
   return (
     <div className="info col-12">
       <span>
-        <p><input type="text" id="challenge" placeholder="Challenge Number" /></p>
+        <p><input type="number" id="challenge" placeholder="Challenge Number" /></p>
         <p><input type="text" id="game-name" placeholder="New Game Name" /></p>
-        <p><input type="button" className="btn btn-danger" onClick={() =>
+        <p><input type="button" className="btn btn-primary gradient" onClick={() =>
             params.challenge_guess_your_opponent(document.getElementById("game-name").value,
             params.player, document.getElementById("challenge").value)} value="Challenge" /></p>
         </span>

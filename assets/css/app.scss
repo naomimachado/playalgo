@@ -112,14 +112,16 @@ li{
   top: 120px;
 }
 
+.disp-table1{
+  position: absolute;
+  left: 50px;
+  top: 70px;
+}
+
 #car-stuff1 {
   background-color: black;
   background-image: url("/images/road1.png");
   background-size: contain;
-}
-
-.btn{
-  font-size: 25px;
 }
 
 .inline{
@@ -137,7 +139,7 @@ li{
 .inline2{
   float: right;
   position: absolute;
-  right: 250px;
+  right: 300px;
   top: 70px;
   font-size: 30px;
   font-weight: bold;
@@ -151,30 +153,49 @@ li{
   font-size: 25px;
 }
 
+//Attribution: http://webtricksandtreats.com/table-style-css/
+
 table.table-style-three {
 		color: #333333;
 		border-width: 1px;
-		border-color: #3A3A3A;
+		border-color: #85CAE0;
 		border-collapse: collapse;
 	}
 	table.table-style-three th {
 		border-width: 1px;
 		padding: 8px;
 		border-style: solid;
-		border-color: #FFA6A6;
-		background-color: #D56A6A;
+		border-color: #85CAE0;
+		background-color: #33a6cc;
 		color: #ffffff;
 	}
 	table.table-style-three tr:hover td {
 		cursor: pointer;
 	}
 	table.table-style-three tr:nth-child(even) td{
-		background-color: #F7CFCF;
+		background-color: #C2E4F0;
 	}
 	table.table-style-three td {
 		border-width: 1px;
 		padding: 8px;
 		border-style: solid;
-		border-color: #FFA6A6;
+		border-color: #85CAE0;
 		background-color: #ffffff;
 	}
+
+  .btn{
+    font-size: 25px;
+    font-weight: bold;
+  }
+
+  //Attribution: https://bootstrapbay.com/blog/bootstrap-button-styles/
+
+  .btn-primary.gradient {
+	background: -moz-linear-gradient(top,  #33a6cc 50%, #0099cc 50%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(50%,#33a6cc), color-stop(50%,#0099cc)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #33a6cc 50%,#0099cc 50%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #33a6cc 50%,#0099cc 50%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #33a6cc 50%,#0099cc 50%); /* IE10+ */
+	background: linear-gradient(to bottom,  #33a6cc 50%,#0099cc 50%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#33a6cc', endColorstr='#0099cc',GradientType=0 ); /* IE6-9 */
+}

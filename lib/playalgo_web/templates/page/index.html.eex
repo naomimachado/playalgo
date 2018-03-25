@@ -2,7 +2,7 @@
 <div class="row im" >
   <div class="col">
     <h1>Join a Game Channel</h1>
-    <span><input type="email" id="game-player-name" placeholder="Enter your email" required/>
+    <span><input type="text" id="game-player-name" placeholder="Enter your name" required/>
       <select id="joinee-type">
         <option value="player">Player</option>
         <option value="viewer">Viewer</option>
@@ -12,13 +12,13 @@
       <option value="sort_attack">Sort_Attack</option>
       <option value="org_my_cheatsheet">Organize My Cheatsheet</option>
     </select>
-    <input type="button" class="btn btn-primary" id="join" value="Join" onclick="join();"></span>
+    <input type="button" class="btn btn-primary gradient" id="join" value="Join" onclick="join();"></span>
   </div>
   <script>
     function join() {
       var player = document.getElementById('game-player-name').value;
       if (player == "") {
-        alert("Error Message: Email cannot be empty")
+        alert("Error Message: Name cannot be empty")
       } else {
         var type = document.getElementById('joinee-type').options[document.getElementById('joinee-type').selectedIndex].value;
         var channel = document.getElementById('game-list').options[document.getElementById('game-list').selectedIndex].value;
