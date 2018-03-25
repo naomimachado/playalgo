@@ -74,7 +74,6 @@ class Game extends React.Component{
   }
 
   leaderboard() {
-    console.log("leaderboard");
     this.channel.push("leaderboard", {game_channel: "guess_your_opponent"})
       .receive("ok", resp => {
         this.state.leaderboard = resp.leaderboard
@@ -103,7 +102,6 @@ class Game extends React.Component{
       });
     }
     if(view.result) {
-      console.log(view.result);
       this.state.result = view.result;
       this.setState(this.state);
     }
@@ -115,7 +113,6 @@ class Game extends React.Component{
       this.update_track();
       this.setState(this.state);
     }
-    console.log(this.state);
   }
 
   gotViewer(view){
@@ -124,7 +121,6 @@ class Game extends React.Component{
         view: view.view
       }
     )
-    console.log(this.state.view);
     if(view.view.winner){
       this.state.winner = view.view.winner;
       this.setState(this.state);
@@ -165,7 +161,6 @@ class Game extends React.Component{
       }
     }
     if (this.state.winner && this.state.winner == this.state.player_state.player_state.opponent_name){
-      console.log("opponent")
       if (this.state.player_state.player_state.id == 1) {
         document.getElementById("car2").style.right = "87.5%";
       }
@@ -247,6 +242,10 @@ class Game extends React.Component{
           return <GameInstance player={this.state.player} game={game} get_game_guess_your_opponent={this.get_game_guess_your_opponent.bind(this)} key={ii} />;
         });
 
+        let leader_list = _.map(this.state.leaderboard, (leader, ii) => {
+          return <LeaderBoard leader={leader} rank={leader.rank} key={ii} />;
+        });
+
         return (
           <div className="row flex-container">
             <p>
@@ -274,11 +273,27 @@ class Game extends React.Component{
             </tr>
               </tbody>
             </table>
-            <table className="inline">
+            <table className="inline1 table-style-three">
+              <h2>Leader Board</h2>
               <tbody>
                 <tr>
-                  <td><LeaderBoard/></td>
+                  <th>
+                    Rank
+                  </th>
+                  <th>
+                    Player Name
+                  </th>
+                  <th>
+                    Games
+                  </th>
+                  <th>
+                    Wins
+                  </th>
+                  <th>
+                    Points
+                  </th>
                 </tr>
+                {leader_list}
               </tbody>
             </table>
           </p>
@@ -542,9 +557,26 @@ function GameStats(params){
   )
 }
 
-function LeaderBoard() {
+function LeaderBoard(params) {
+  let value = Object.values(params.leader)[0];
   return(
-    <p>Leader Board </p>
+    <tr>
+      <td>
+        {params.rank}
+      </td>
+      <td>
+        {value.player_name}
+      </td>
+      <td>
+        {value.played}
+      </td>
+      <td>
+        {value.wins}
+      </td>
+      <td>
+        {value.points}
+      </td>
+    </tr>
   )
 
 }

@@ -3,12 +3,18 @@ defmodule PlayalgoWeb.GamesChannel do
 
   alias Playalgo.Game
 
-  defp form_leaderboard_response(leaderboard) do
-    Enum.map leaderboard, fn(player) ->
-      key = elem(player, 0)
-      val = elem(player, 1)
-      Map.put_new(%{}, key, val)
-    end
+  defp form_leaderboard_response(leaderboard, new_leaderboard, rank, rem) when rem == 0 do
+    new_leaderboard
+  end
+
+  defp form_leaderboard_response(leaderboard, new_leaderboard, rank, rem) do
+    player = (hd leaderboard)
+    IO.inspect player
+    key = elem(player, 0)
+    val = elem(player, 1)
+    new = Map.put_new(%{}, key, val)
+    new = Map.put(new, :rank, rank)
+    form_leaderboard_response((tl leaderboard), new_leaderboard ++ [new], rank + 1, rem - 1)
   end
 
   def join("games:" <> name, payload, socket) do
@@ -83,7 +89,8 @@ defmodule PlayalgoWeb.GamesChannel do
   def handle_in("leaderboard", %{"game_channel" => game_channel}, socket) do
     game = Playalgo.GameBackup.load(game_channel) || Game.new()
     socket = assign(socket, :game, game)
-    leaderboard = form_leaderboard_response(Game.leaderboard(game, game_channel))
+    leaderboard = Game.leaderboard(game, game_channel)
+    leaderboard = form_leaderboard_response(leaderboard, [], 1, length(leaderboard))
     {:reply, {:ok, %{ "leaderboard" => leaderboard}}, socket}
   end
 
