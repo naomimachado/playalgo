@@ -12,7 +12,7 @@
       <option value="sort_attack">Sort_Attack</option>
       <option value="org_my_cheatsheet">Organize My Cheatsheet</option>
     </select>
-    <input type="button" id="join" value="Join" onclick="join();"></span>
+    <input type="button" class="btn btn-primary" id="join" value="Join" onclick="join();"></span>
   </div>
   <script>
     function join() {
