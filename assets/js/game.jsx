@@ -24,6 +24,7 @@ class Game extends React.Component{
     this.channel.on("join_game", resp => {
       if (!this.has_opponents && this.state.game_name == resp.game.game_name) {
       	this.gotView(resp);
+        this.leaderboard();
       }
     });
     this.channel.on("guess", resp => {
@@ -65,6 +66,13 @@ class Game extends React.Component{
       });
   }
 
+  leaderboard() {
+    this.channel.push("leaderboard", {game_channel: "guess_your_opponent"})
+      .receive("ok", resp => {
+        this.state.leaderboard = resp.leaderboard
+        this.setState(this.state);
+      });
+  }
 
   gotView(view) {
     if (view.game.player_state) {

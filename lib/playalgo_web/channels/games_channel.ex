@@ -9,7 +9,7 @@ defmodule PlayalgoWeb.GamesChannel do
       socket = socket
       |> assign(:game, game)
       |> assign(:name, name)
-      
+
       response = nil
       if payload["type"] == "player" do
         response = {:ok, %{"join" => name, "game" => Game.client_view(game, name, payload["player"]), "player" => payload["player"]}, socket}
@@ -70,6 +70,12 @@ defmodule PlayalgoWeb.GamesChannel do
     game = Game.view(socket.assigns[:game], game_channel, game_name, player_name)
     socket = assign(socket, :game, game)
     {:reply, {:ok, %{ "view" => Game.viewer_view(game, game_channel, game_name, player_name)}}, socket}
+  end
+
+  def handle_in("leaderboard", %{"game_channel" => game_channel}, socket) do
+    game = Playalgo.GameBackup.load(game_channel)
+    socket = assign(socket, :game, game)
+    {:reply, {:ok, %{ "leaderboard" => Game.leaderboard(game, game_channel)}}, socket}
   end
 
   # Add authorization logic here as required.
