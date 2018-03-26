@@ -94,10 +94,12 @@ defmodule PlayalgoWeb.GamesChannel do
   end
 
   def handle_in("shout",  %{"game_channel" => game_channel, "name" => name, "type" => type, "body" => body }, socket) do
-    game = Playalgo.GameBackup.load(game_channel) || Game.new()
+    game = Playalgo.GameBackup.load(game_chnnel) || Game.new()
+    game = Game.shout(game, game_channel, name, type, body)
+    IO.inspect game
+    Playalgo.GameBackup.save(socket.assigns[:name], game)
     socket = assign(socket, :game, game)
-    IO.inspect name
-    broadcast socket, "shout", %{"game_channel" => game_channel, "name" => name, "type" => type, "body" => body}
+    broadcast socket, "shout", %{ "chat" => game.guess_your_opponent.chat}
     {:noreply ,socket}
   end
 

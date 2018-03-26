@@ -5,8 +5,11 @@ defmodule Playalgo.Game do
   def new do
     %{
       guess_your_opponent: %{
+        chat: []
       }, sort_attack: %{
+        chat: []
       }, organize_my_cheatsheet: %{
+        chat: []
       }
     }
   end
@@ -102,14 +105,13 @@ defmodule Playalgo.Game do
 
   def client_view(game, game_channel, player_name) do
     games = joinable_games(game, game_channel)
-    #{game_name, player_state} = get_player_state(game, all_games(game, game_channel), game_channel, player_name)
     %{
       games: games,
       my_games: player_games(game, game_channel, player_name),
-      player_state: nil,#player_state,
-      has_opponent: false,#has_opponent(game, game_channel, game_name),
-      game_name: "",#game_name,
-      winner: nil#game.guess_your_opponent[game_name][:winner]
+      player_state: nil,
+      has_opponent: false,
+      game_name: "",
+      winner: nil
     }
   end
 
@@ -127,6 +129,7 @@ defmodule Playalgo.Game do
     games = all_games(game, game_channel)
     %{
       games: games,
+      chat: game.guess_your_opponent[:chat]
     }
   end
 
@@ -158,11 +161,9 @@ defmodule Playalgo.Game do
     Enum.reverse(leaderboard)
   end
 
-  #def add_to_chat(game_channel, name, type, body) do
-  #  data = %{
-  #  name: name,
-  #    type: type,
-  #    body: body
-  #  }
-  #end
+  def shout(game, game_channel, player_name, type, body) when game_channel == "guess_your_opponent" do
+    new_chat = %{player_name: name, type: type, body: body}
+    new_state = Map.put(game.guess_your_opponent, :chat, chat ++ [new_chat])
+    Map.put(game, :guess_your_opponent, new_state)
+  end
 end

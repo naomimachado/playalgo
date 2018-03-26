@@ -39,6 +39,7 @@ class Game extends React.Component{
         this.gotView(resp);
       }
     });
+    this.channel.on("shout", this.gotChat.bind(this));
   }
 
   toggleHidden () {
@@ -139,6 +140,12 @@ class Game extends React.Component{
     }
   }
 
+  gotChat(chat){
+    console.log(chat);
+    this.state.chat = chat.chat;
+    this.setState(this.state);
+  }
+
   update_track_viewer() {
 
     changePosCar(this.state.view.viewer_state.player1_state.player_state.score, "car1");
@@ -180,9 +187,6 @@ class Game extends React.Component{
 
 
   listenForChats() {
-    document.getElementById('chat-form').addEventListener('submit', function(e){
-      e.preventDefault()
-
       let userName = document.getElementById('user-name').value
       let userType = document.getElementById('user-type').value
       let userMsg = document.getElementById('user-msg').value
@@ -191,11 +195,10 @@ class Game extends React.Component{
       console.log(userMsg);
 
       this.channel.push("shout", {game_channel: "guess_your_opponent", name: userName, type: userType, body: userMsg})
-
       //console.log(this.channel);
 
       document.getElementById('user-msg').value = ''
-    })
+    }
 
     // let userName = document.getElementById('user-name').value
     // let userType = document.getElementById('user-type').value
@@ -208,7 +211,7 @@ class Game extends React.Component{
     //
     //   document.getElementById('user-msg').value = ''
 
-    this.channel.on("shout", something => {
+    /*this.channel.on("shout", something => {
 
       // this.state.chat = something.chat
       // this.setState(this.state);
@@ -217,7 +220,7 @@ class Game extends React.Component{
 
       msgBlock.insertAdjacentHTML('beforeend', `${something.name}(${something.type}): ${something.body}`)
       chatBox.appendChild(msgBlock)
-    })
+    })*/
   }
 
 
@@ -300,7 +303,7 @@ class Game extends React.Component{
                   <button onClick={this.chatHidden.bind(this)} className="btn btn-primary gradient">
                     Click to view Chat Box
                   </button>
-                  {!this.state.chatHidden && <ChatBox view={this.state.player} listenForChats={this.listenForChats.bind(this)}/>}
+                  {!this.state.chatHidden && <ChatBox chat={this.state.chat} view={this.state.player} listenForChats={this.listenForChats.bind(this)}/>}
                 </div>
                 <h1>&nbsp; View Games</h1><br/>
                 <div>{view_list}</div>
@@ -350,7 +353,7 @@ class Game extends React.Component{
                     <button onClick={this.chatHidden.bind(this)} className="btn btn-primary gradient">
                       Click to view Chat Box
                     </button>
-                    {!this.state.chatHidden && <ChatBox name={this.state.player} listenForChats={this.listenForChats.bind(this)}/>}
+                    {!this.state.chatHidden && <ChatBox chat={this.state.chat} name={this.state.player} listenForChats={this.listenForChats.bind(this)}/>}
                   </td>
                 </tr>
                 <tr>
@@ -390,7 +393,7 @@ class Game extends React.Component{
                   <button onClick={this.chatHidden.bind(this)} className="btn btn-primary gradient">
                     Click to view Chat Box
                   </button>
-                  {!this.state.chatHidden && <ChatBox name={this.state.player} listenForChats={this.listenForChats.bind(this)}/>}
+                  {!this.state.chatHidden && <ChatBox chat={this.state.chat} name={this.state.player} listenForChats={this.listenForChats.bind(this)} />}
                 </div>
                 <RuleList />
               </div>
@@ -700,8 +703,12 @@ function Heading() {
 }
 
 function ChatBox(params) {
-  console.log(params.name);
   let info = "";
+
+  let chat_list = _.map(params.chat, (chat, ii) => {
+    return <Chat player_name={chat.player_name} type={chat.type} body={chat.body} key={ii} />;
+  });
+
   if(params.name){
     info = "player";
 
@@ -709,6 +716,7 @@ function ChatBox(params) {
     <div>
       Chat Box
       <div id="chat-box">
+        {chat_list}
       </div>
       <form id="chat-form">
         <input type="hidden" id="user-name" value={params.name}></input>
@@ -728,6 +736,7 @@ if(params.view){
     <div>
       Chat Box
       <div id="chat-box">
+        {chat_list}
       </div>
       <form id="chat-form">
         <input type="hidden" id="user-name" value={params.view}></input>
@@ -740,4 +749,10 @@ if(params.view){
   )
 }
 
+}
+
+function Chat(params){
+  return(
+    <p><b>{params.player_name}({params.type})</b>{params.body}</p>
+  )
 }
