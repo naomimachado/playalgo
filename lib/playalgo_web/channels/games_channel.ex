@@ -103,7 +103,6 @@ defmodule PlayalgoWeb.GamesChannel do
   def handle_in("shout",  %{"game_channel" => game_channel, "name" => name, "type" => type, "body" => body }, socket) do
     game = Playalgo.GameBackup.load(game_channel) || Game.new()
     game = Game.shout(game, game_channel, name, type, body)
-    IO.inspect game
     Playalgo.GameBackup.save(socket.assigns[:name], game)
     socket = assign(socket, :game, game)
     broadcast socket, "shout", %{ "chat" => Game.chat(game, game_channel)}

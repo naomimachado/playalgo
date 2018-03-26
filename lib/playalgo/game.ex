@@ -172,12 +172,11 @@ defmodule Playalgo.Game do
     cur_chat = game.chat.guess_your_opponent.chat
     new_chat = %{player_name: player_name, type: type, body: body}
     new_chat = Map.put(game.chat.guess_your_opponent, :chat, cur_chat ++ [new_chat])
-    new_state = Map.put(game.chat, :guess_your_opponent, new_state)
+    new_state = Map.put(game.chat, :guess_your_opponent, new_chat)
     Map.put(game, :chat, new_state)
   end
 
   def chat(game, game_channel) when game_channel == "guess_your_opponent" do
       game.chat.guess_your_opponent.chat
-    end
   end
 end
