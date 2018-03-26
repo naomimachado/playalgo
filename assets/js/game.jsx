@@ -187,12 +187,13 @@ class Game extends React.Component{
 
   init_chat() {
     this.channel.push("chat", {game_channel: "guess_your_opponent"})
-      .receive("ok", resp => { 
+      .receive("ok", resp => {
         this.state.chat = resp.chat
         this.setState(this.state);
     });
   }
 
+//Attribution: https://elixircasts.io/chat-room-in-8-minutes
 
   listenForChats() {
       let userName = document.getElementById('user-name').value
@@ -203,33 +204,9 @@ class Game extends React.Component{
       console.log(userMsg);
 
       this.channel.push("shout", {game_channel: "guess_your_opponent", name: userName, type: userType, body: userMsg})
-      //console.log(this.channel);
 
       document.getElementById('user-msg').value = ''
     }
-
-    // let userName = document.getElementById('user-name').value
-    // let userType = document.getElementById('user-type').value
-    // let userMsg = document.getElementById('user-msg').value
-    // console.log(userName);
-    // console.log(userMsg);
-    //
-    //   var c = document.getElementById('chat-box')
-    //   c.insertAdjacentHTML('beforeend', '<p><b>' + userName +'(' + userType +'):</b>' + userMsg + '</p>')
-    //
-    //   document.getElementById('user-msg').value = ''
-
-    /*this.channel.on("shout", something => {
-
-      // this.state.chat = something.chat
-      // this.setState(this.state);
-      let chatBox = document.querySelector('#chat-box')
-      let msgBlock = document.createElement('p')
-
-      msgBlock.insertAdjacentHTML('beforeend', `${something.name}(${something.type}): ${something.body}`)
-      chatBox.appendChild(msgBlock)
-    })*/
- // }
 
 
   render() {
@@ -405,13 +382,6 @@ class Game extends React.Component{
                 </div>
                 <RuleList />
               </div>
-              <h2 className="inline2">Leader Board</h2>
-              <table className="inline1 table-style-three">
-                <tbody>
-                  <Heading />
-                  {leader_list1}
-                </tbody>
-              </table>
             </div>)
           }
     } else {
@@ -712,7 +682,7 @@ function Heading() {
 
 function ChatBox(params) {
   let info = "";
-  
+
   let chat_list = _.map(params.chat, (chat, ii) => {
     return <Chat player_name={chat.player_name} type={chat.type} body={chat.body} key={ii} />;
   });
@@ -761,6 +731,6 @@ if(params.view){
 
 function Chat(params){
   return(
-    <p><b>{params.player_name}({params.type})</b>{params.body}</p>
+    <p><b>{params.player_name}({params.type}):</b>{params.body}</p>
   )
 }
