@@ -50,7 +50,7 @@ class Game extends React.Component{
       this.channel.push("join_game", {game_channel: "guess_your_opponent", game_name: game_name, player_name: player_name, challenge: challenge})
         .receive("ok", this.gotView.bind(this))
     } else {
-      alert("Error Message: Challenge or Player Name is empty");
+      alert("Error Message: Challenge or Player Name is empty/ Values are incorrect");
     }
   }
 
@@ -192,23 +192,22 @@ class Game extends React.Component{
 
         return(
           <div className="rows flex-container">
-            <p>
               <h1>&nbsp;Guess Your Opponent: Welcome viewer {this.state.player}</h1>
               <h2>&nbsp;Game name: {this.state.view.game_name}</h2>
-              <h2>&nbsp;Game Winner:{winner}</h2><br/>
+              <h2>&nbsp;Game Winner:{winner}</h2>
               <h3>&nbsp;Player 1: {this.state.view.viewer_state.player1_state.player_state.name}</h3>
-              <h3>&nbsp;Guess List: {player1_list}</h3>
+              <h3>&nbsp;Guess List:</h3><ul className="guess-list">{player1_list}</ul>
               <h3>&nbsp;Clicks: {this.state.view.viewer_state.player1_state.player_state.clicks}</h3>
-              <h3>&nbsp;Score:{this.state.view.viewer_state.player1_state.player_state.score}</h3><br/>
+              <h3>&nbsp;Score:{this.state.view.viewer_state.player1_state.player_state.score}</h3>
                 <div id="car-stuff1">
                   <img src="/images/1.png" id="car1"></img><img src="/images/finish.png" className="endline"></img><br></br>
                   <img src="/images/2.png" id="car2"></img><img src="/images/finish.png" className="endline"></img>
-                </div><br/>
+                </div>
               <h3>&nbsp;Player 2: {this.state.view.viewer_state.player2_state.player_state.name}</h3>
-              <h3>&nbsp;Guess List: {player2_list}</h3>
+              <h3>&nbsp;Guess List:</h3><ul className="guess-list">{player2_list}</ul>
               <h3>&nbsp;Clicks: {this.state.view.viewer_state.player2_state.player_state.clicks}</h3>
               <h3>&nbsp;Score:{this.state.view.viewer_state.player2_state.player_state.score}</h3>
-            </p>
+              <input type="button" className="btn btn-primary gradient" onClick={() => window.location.reload()} value="View Other Games" />
           </div>)
       } else {
 
@@ -222,35 +221,16 @@ class Game extends React.Component{
         });
 
         return(
-          <div className="row">
-            <p>
-              <h1>&nbsp; Guess Your Opponent: Welcome {this.state.player}</h1><br/>
-              <h1>&nbsp; View Games</h1><br/>
-              {view_list}
-            </p>
+          <div className="row flex-container">
+              <h1>&nbsp; Guess Your Opponent: Welcome {this.state.player}</h1>
+              <div className="views">
+                <h1>&nbsp; View Games</h1><br/>
+                <div>{view_list}</div>
+              </div>
+              <h2 className="inline2">Leader Board</h2>
             <table className="inline1 table-style-three">
-              <h2>Leader Board</h2>
               <tbody>
-                <tr>
-                  <th>
-                    Rank
-                  </th>
-                  <th>
-                    Player Name
-                  </th>
-                  <th>
-                    Games
-                  </th>
-                  <th>
-                    Wins
-                  </th>
-                  <th>
-                    Score
-                  </th>
-                  <th>
-                    Points
-                  </th>
-                </tr>
+                <Heading/>
                 {leader_list}
               </tbody>
             </table>
@@ -278,12 +258,11 @@ class Game extends React.Component{
 
         return (
           <div className="row flex-container">
-            <p>
-            <h1>&nbsp; Guess Your Opponent: Welcome {this.state.player}</h1><br/>
-            <table className="inline">
+            <h1>&nbsp; Guess Your Opponent: Welcome {this.state.player}</h1>
+            <table className="inline disp-table1">
               <tbody>
                 <tr>
-                  <td><button onClick={this.toggleHidden.bind(this)} className="btn btn-primary" >
+                  <td><button onClick={this.toggleHidden.bind(this)} className="btn btn-primary gradient" >
                     Click to View Rules
                   </button>
                 {!this.state.isHidden && <RuleList />}</td>
@@ -292,52 +271,42 @@ class Game extends React.Component{
                 <td>
                   <GameInfo />
                   <GuessOpponentGame player={this.state.player} challenge_guess_your_opponent={this.challenge_guess_your_opponent.bind(this)} />
-                  <p>
                     <h3>&nbsp; My Games:</h3>
                     { my_game_list }
-                    <br></br>
-                    <h3>&nbsp; Existing Games:</h3><br/>
-                    { game_list }<br/>
-                  </p>
+                    <h3>&nbsp; Existing Games:</h3>
+                    { game_list }
                 </td>
             </tr>
               </tbody>
             </table>
+            <h2 className="inline2">Leader Board</h2>
             <table className="inline1 table-style-three">
-              <h2>Leader Board</h2>
               <tbody>
-                <tr>
-                  <th>
-                    Rank
-                  </th>
-                  <th>
-                    Player Name
-                  </th>
-                  <th>
-                    Games
-                  </th>
-                  <th>
-                    Wins
-                  </th>
-                  <th>
-                    Score
-                  </th>
-                  <th>
-                    Points
-                  </th>
-                </tr>
+                <Heading />
                 {leader_list}
               </tbody>
             </table>
-          </p>
           </div>)
         } else {
           //when player has created a game and waiting for other player to join
+          let leader_list1 = _.map(this.state.leaderboard, (leader, ii) => {
+            return <LeaderBoard leader={leader} rank={leader.rank} key={ii} />;
+          });
+
           return (
             <div className="row flex-container">
               <h1>&nbsp; Guess Your Opponent: Welcome {this.state.player}</h1>
-              <h1 id="wait">&nbsp; Waiting for player to join........</h1>
-              <RuleList />
+              <h1 id="wait" className="disp">&nbsp; Waiting for player to join........</h1>
+              <div  className="disp-table">
+                <RuleList />
+              </div>
+              <h2 className="inline2">Leader Board</h2>
+              <table className="inline1 table-style-three">
+                <tbody>
+                  <Heading />
+                  {leader_list1}
+                </tbody>
+              </table>
             </div>)
           }
     } else {
@@ -358,21 +327,18 @@ class Game extends React.Component{
               <img src="/images/1.png" id="car1"></img><img src="/images/finish.png" className="endline"></img><br></br>
               <img src="/images/2.png" id="car2"></img><img src="/images/finish.png" className="endline"></img>
             </div>
-            <p>
             <div id="game-stuff">
               <div className="cols">
-                <pre/>&nbsp;Winner is:<span>{this.state.winner}</span>
+                &nbsp;Winner is:<span>{this.state.winner}</span>
             </div>
             <div>
-              <br></br>
-            <p>&nbsp;Guesses in this round:
+              &nbsp;Guesses in this round:
               <br/>
-              {guesses}</p>
+              <ul className="guess-list">{guesses}</ul>
               <GameStats state={this.state}/>
             </div>&nbsp;
-            <input type="button" className="btn btn-primary" onClick={() => window.location.reload()} value="New Game" />
+            <input type="button" className="btn btn-primary gradient" onClick={() => window.location.reload()} value="New Game" />
           </div>
-          </p>
         </div>
         )
       } else {
@@ -384,21 +350,17 @@ class Game extends React.Component{
             <img src="/images/2.png" id="car2"></img><img src="/images/finish.png" className="endline"></img>
           </div>
           <div id="game-stuff">
-            <p>
             <div className="cols">
               &nbsp;Welcome player:<span>{this.state.player}</span>
           </div>
           <div className="cols cols-3">
-            &nbsp;List of Numbers:<br></br>
-            <ul>{nums}</ul>
+            &nbsp;List of Numbers:
+            <ul className="game">{nums}</ul>
           </div>
           <div>
             &nbsp;Guessed Numbers:
-            <ul>{guesses}</ul>
+            <ul className="guess-list">{guesses}</ul>
           </div>
-          <div>
-          </div>
-          </p>
         </div>
       </div>
     )
@@ -412,9 +374,9 @@ function GuessOpponentGame(params) {
   return (
     <div className="info col-12">
       <span>
-        <p><input type="text" id="challenge" placeholder="Challenge Number" /></p>
+        <p><input type="number" id="challenge" placeholder="Challenge Number" /></p>
         <p><input type="text" id="game-name" placeholder="New Game Name" /></p>
-        <p><input type="button" className="btn btn-danger" onClick={() =>
+        <p><input type="button" className="btn btn-primary gradient" onClick={() =>
             params.challenge_guess_your_opponent(document.getElementById("game-name").value,
             params.player, document.getElementById("challenge").value)} value="Challenge" /></p>
         </span>
@@ -460,9 +422,9 @@ function RenderGuessList(props) {
   let num = props.num;
   return (
     <span className="rows">
-      <span id="guess">
+      <li id="guess">
         {num.number}({num.result})
-      </span>
+      </li>
     </span>
   )
 }
@@ -615,4 +577,29 @@ function LeaderBoard(params) {
     </tr>
   )
 
+}
+
+function Heading() {
+  return(
+    <tr>
+      <th>
+        Rank
+      </th>
+      <th>
+        Player Name
+      </th>
+      <th>
+        Games
+      </th>
+      <th>
+        Wins
+      </th>
+      <th>
+        Score
+      </th>
+      <th>
+        Points
+      </th>
+    </tr>
+  )
 }
