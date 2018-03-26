@@ -23,7 +23,7 @@ class Game extends React.Component{
          this.gotView(resp);
        }
        this.leaderboard();
-       this.listenForChats();
+       this.init_chat();
     })
     .receive("error", resp => { console.log("Unable to join", resp) });
     this.channel.on("join_game", resp => {
@@ -51,7 +51,7 @@ class Game extends React.Component{
   chatHidden () {
     this.setState({
       chatHidden: !this.state.chatHidden
-    })
+    });
   }
 
   challenge_guess_your_opponent(game_name, player_name, challenge) {
@@ -185,6 +185,14 @@ class Game extends React.Component{
     }
   }
 
+  init_chat() {
+    this.channel.push("chat", {game_channel: "guess_your_opponent"})
+      .receive("ok", resp => { 
+        this.state.chat = resp.chat
+        this.setState(this.state);
+    });
+  }
+
 
   listenForChats() {
       let userName = document.getElementById('user-name').value
@@ -221,7 +229,7 @@ class Game extends React.Component{
       msgBlock.insertAdjacentHTML('beforeend', `${something.name}(${something.type}): ${something.body}`)
       chatBox.appendChild(msgBlock)
     })*/
-  }
+ // }
 
 
   render() {
@@ -704,7 +712,7 @@ function Heading() {
 
 function ChatBox(params) {
   let info = "";
-
+  
   let chat_list = _.map(params.chat, (chat, ii) => {
     return <Chat player_name={chat.player_name} type={chat.type} body={chat.body} key={ii} />;
   });

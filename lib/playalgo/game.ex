@@ -5,11 +5,8 @@ defmodule Playalgo.Game do
   def new do
     %{
       guess_your_opponent: %{
-        chat: []
       }, sort_attack: %{
-        chat: []
       }, organize_my_cheatsheet: %{
-        chat: []
       }
     }
   end
@@ -48,8 +45,9 @@ defmodule Playalgo.Game do
   end
 
   defp joinable_games(game, game_channel) when game_channel == "guess_your_opponent" do
+    IO.inspect Map.keys(game.guess_your_opponent)
     Enum.filter Map.keys(game.guess_your_opponent), fn(x) ->
-	!has_opponent(game, game_channel, x)
+	x != :chat && !has_opponent(game, game_channel, x)
     end
   end
 
@@ -105,13 +103,14 @@ defmodule Playalgo.Game do
 
   def client_view(game, game_channel, player_name) do
     games = joinable_games(game, game_channel)
+    #{game_name, player_state} = get_player_state(game, all_games(game, game_channel), game_channel, player_name)
     %{
       games: games,
       my_games: player_games(game, game_channel, player_name),
-      player_state: nil,
-      has_opponent: false,
-      game_name: "",
-      winner: nil
+      player_state: nil,#player_state,
+      has_opponent: false,#has_opponent(game, game_channel, game_name),
+      game_name: "",#game_name,
+      winner: nil#game.guess_your_opponent[game_name][:winner]
     }
   end
 
@@ -128,8 +127,7 @@ defmodule Playalgo.Game do
   def viewer_view(game, game_channel, player_name) do
     games = all_games(game, game_channel)
     %{
-      games: games,
-      chat: game.guess_your_opponent[:chat]
+      games: games
     }
   end
 
@@ -162,8 +160,23 @@ defmodule Playalgo.Game do
   end
 
   def shout(game, game_channel, player_name, type, body) when game_channel == "guess_your_opponent" do
-    new_chat = %{player_name: name, type: type, body: body}
-    new_state = Map.put(game.guess_your_opponent, :chat, chat ++ [new_chat])
+    if !Map.has_key?(game.guess_your_opponent, :chat) do
+      cur_chat = []
+    else
+      cur_chat = game.guess_your_opponent.chat
+    end
+    
+    new_chat = %{player_name: player_name, type: type, body: body}
+    new_state = Map.put(game.guess_your_opponent, :chat,
+	 cur_chat ++ [new_chat])
     Map.put(game, :guess_your_opponent, new_state)
+  end
+
+  def chat(game, game_channel) when game_channel == "guess_your_opponent" do
+    if !Map.has_key?(game.guess_your_opponent, :chat) do
+      []
+    else
+      game.guess_your_opponent.chat
+    end
   end
 end
