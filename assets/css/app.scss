@@ -56,9 +56,8 @@ body {
   columns: 15;
 }
 
-.guess-list{
+.g-list{
   columns: 5;
-  overflow: scroll;
 }
 
 li{
@@ -104,6 +103,26 @@ li{
   background-color: black;
   background-image: url("/images/road1.png");
   background-size: contain;
+}
+
+.bg{
+  position: relative;
+  background: black url("/images/road1.png");
+  background-size: contain;
+  background-repeat: repeat-x;
+  background-position: 0 0;
+  animation: animate 7s linear infinite;
+}
+
+@keyframes animate {
+
+  from{
+    background-position: 0 0;
+  }
+  to{
+    background-position: 50% 0;
+  }
+
 }
 
 .disp{

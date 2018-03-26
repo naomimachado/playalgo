@@ -188,7 +188,6 @@ class Game extends React.Component{
 
         if(this.state.winner){
           winner = this.state.winner;
-        }
 
         return(
           <div className="rows flex-container">
@@ -196,7 +195,7 @@ class Game extends React.Component{
               <h2>&nbsp;Game name: {this.state.view.game_name}</h2>
               <h2>&nbsp;Game Winner:{winner}</h2>
               <h3>&nbsp;Player 1: {this.state.view.viewer_state.player1_state.player_state.name}</h3>
-              <h3>&nbsp;Guess List:</h3><ul className="guess-list">{player1_list}</ul>
+              <h3>&nbsp;Guess List:</h3><ul className="g-list">{player1_list}</ul>
               <h3>&nbsp;Clicks: {this.state.view.viewer_state.player1_state.player_state.clicks}</h3>
               <h3>&nbsp;Score:{this.state.view.viewer_state.player1_state.player_state.score}</h3>
                 <div id="car-stuff1">
@@ -204,11 +203,34 @@ class Game extends React.Component{
                   <img src="/images/2.png" id="car2"></img><img src="/images/finish.png" className="endline"></img>
                 </div>
               <h3>&nbsp;Player 2: {this.state.view.viewer_state.player2_state.player_state.name}</h3>
-              <h3>&nbsp;Guess List:</h3><ul className="guess-list">{player2_list}</ul>
+              <h3>&nbsp;Guess List:</h3><ul className="g-list">{player2_list}</ul>
               <h3>&nbsp;Clicks: {this.state.view.viewer_state.player2_state.player_state.clicks}</h3>
               <h3>&nbsp;Score:{this.state.view.viewer_state.player2_state.player_state.score}</h3>
               <input type="button" className="btn btn-primary gradient" onClick={() => window.location.reload()} value="View Other Games" />
           </div>)
+        }
+        else{
+          return(
+            <div className="rows flex-container">
+                <h1>&nbsp;Guess Your Opponent: Welcome viewer {this.state.player}</h1>
+                <h2>&nbsp;Game name: {this.state.view.game_name}</h2>
+                <h3>&nbsp;Player 1: {this.state.view.viewer_state.player1_state.player_state.name}</h3>
+                <h3>&nbsp;Guess List:</h3><ul className="g-list">{player1_list}</ul>
+                <h3>&nbsp;Clicks: {this.state.view.viewer_state.player1_state.player_state.clicks}</h3>
+                <h3>&nbsp;Score:{this.state.view.viewer_state.player1_state.player_state.score}</h3>
+                  <div id="car-stuff1">
+                    <div className="bg">
+                      <img src="/images/1.png" id="car1"></img><img src="/images/finish.png" className="endline"></img><br></br>
+                      <img src="/images/2.png" id="car2"></img><img src="/images/finish.png" className="endline"></img>
+                    </div>
+                  </div>
+                <h3>&nbsp;Player 2: {this.state.view.viewer_state.player2_state.player_state.name}</h3>
+                <h3>&nbsp;Guess List:</h3><ul className="g-list">{player2_list}</ul>
+                <h3>&nbsp;Clicks: {this.state.view.viewer_state.player2_state.player_state.clicks}</h3>
+                <h3>&nbsp;Score:{this.state.view.viewer_state.player2_state.player_state.score}</h3>
+                <input type="button" className="btn btn-primary gradient" onClick={() => window.location.reload()} value="View Other Games" />
+            </div>)
+        }
       } else {
 
         //display games to view
@@ -334,7 +356,7 @@ class Game extends React.Component{
             <div>
               &nbsp;Guesses in this round:
               <br/>
-              <ul className="guess-list">{guesses}</ul>
+              <ul className="g-list">{guesses}</ul>
               <GameStats state={this.state}/>
             </div>&nbsp;
             <input type="button" className="btn btn-primary gradient" onClick={() => window.location.reload()} value="New Game" />
@@ -346,8 +368,10 @@ class Game extends React.Component{
       return (
         <div className="rows flex-container">
           <div id="car-stuff">
-            <img src="/images/1.png" id="car1"></img><img src="/images/finish.png" className="endline"></img><br></br>
-            <img src="/images/2.png" id="car2"></img><img src="/images/finish.png" className="endline"></img>
+            <div className="bg">
+              <img src="/images/1.png" id="car1"></img><img src="/images/finish.png" className="endline"></img><br></br>
+              <img src="/images/2.png" id="car2"></img><img src="/images/finish.png" className="endline"></img>
+            </div>
           </div>
           <div id="game-stuff">
             <div className="cols">
@@ -359,7 +383,7 @@ class Game extends React.Component{
           </div>
           <div>
             &nbsp;Guessed Numbers:
-            <ul className="guess-list">{guesses}</ul>
+            <ul className="g-list">{guesses}</ul>
           </div>
         </div>
       </div>
