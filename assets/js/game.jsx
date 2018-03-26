@@ -196,7 +196,7 @@ class Game extends React.Component{
               <h2>&nbsp;Game name: {this.state.view.game_name}</h2>
               <h2>&nbsp;Game Winner:{winner}</h2>
               <h3>&nbsp;Player 1: {this.state.view.viewer_state.player1_state.player_state.name}</h3>
-              <h3>&nbsp;Guess List: {player1_list}</h3>
+              <h3>&nbsp;Guess List:</h3><ul className="guess-list">{player1_list}</ul>
               <h3>&nbsp;Clicks: {this.state.view.viewer_state.player1_state.player_state.clicks}</h3>
               <h3>&nbsp;Score:{this.state.view.viewer_state.player1_state.player_state.score}</h3>
                 <div id="car-stuff1">
@@ -204,7 +204,7 @@ class Game extends React.Component{
                   <img src="/images/2.png" id="car2"></img><img src="/images/finish.png" className="endline"></img>
                 </div>
               <h3>&nbsp;Player 2: {this.state.view.viewer_state.player2_state.player_state.name}</h3>
-              <h3>&nbsp;Guess List: {player2_list}</h3>
+              <h3>&nbsp;Guess List:</h3><ul className="guess-list">{player2_list}</ul>
               <h3>&nbsp;Clicks: {this.state.view.viewer_state.player2_state.player_state.clicks}</h3>
               <h3>&nbsp;Score:{this.state.view.viewer_state.player2_state.player_state.score}</h3>
               <input type="button" className="btn btn-primary gradient" onClick={() => window.location.reload()} value="View Other Games" />
@@ -334,7 +334,7 @@ class Game extends React.Component{
             <div>
               &nbsp;Guesses in this round:
               <br/>
-              {guesses}
+              <ul className="guess-list">{guesses}</ul>
               <GameStats state={this.state}/>
             </div>&nbsp;
             <input type="button" className="btn btn-primary gradient" onClick={() => window.location.reload()} value="New Game" />
@@ -355,11 +355,11 @@ class Game extends React.Component{
           </div>
           <div className="cols cols-3">
             &nbsp;List of Numbers:
-            <ul>{nums}</ul>
+            <ul className="game">{nums}</ul>
           </div>
           <div>
             &nbsp;Guessed Numbers:
-            <ul>{guesses}</ul>
+            <ul className="guess-list">{guesses}</ul>
           </div>
         </div>
       </div>
@@ -422,9 +422,9 @@ function RenderGuessList(props) {
   let num = props.num;
   return (
     <span className="rows">
-      <span id="guess">
+      <li id="guess">
         {num.number}({num.result})
-      </span>
+      </li>
     </span>
   )
 }

@@ -4,6 +4,7 @@ body {
   font-size: 20pt;
   font-family: Rockwell, Courier Bold, Courier, Georgia, Times, Times New Roman, serif;
   font-weight: normal;
+  overflow: scroll;
 }
 
 .im{
@@ -51,8 +52,13 @@ body {
   font-weight: bold;
 }
 
-ul{
+.game{
   columns: 15;
+}
+
+.guess-list{
+  columns: 5;
+  overflow: scroll;
 }
 
 li{
