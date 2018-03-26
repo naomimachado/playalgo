@@ -93,6 +93,14 @@ defmodule PlayalgoWeb.GamesChannel do
     {:reply, {:ok, %{ "leaderboard" => leaderboard}}, socket}
   end
 
+  def handle_in("shout",  %{"game_channel" => game_channel, "name" => name, "type" => type, "body" => body }, socket) do
+    game = Playalgo.GameBackup.load(game_channel) || Game.new()
+    socket = assign(socket, :game, game)
+    IO.inspect name
+    broadcast socket, "shout", %{"game_channel" => game_channel, "name" => name, "type" => type, "body" => body}
+    {:noreply ,socket}
+  end
+
   # Add authorization logic here as required.
   defp authorized?(_payload) do
     true

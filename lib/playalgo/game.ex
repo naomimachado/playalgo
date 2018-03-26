@@ -157,4 +157,12 @@ defmodule Playalgo.Game do
     leaderboard = Playalgo.Leaderboard.leaderboard(game, game_channel, all_games(game, game_channel))
     Enum.reverse(leaderboard)
   end
+
+  #def add_to_chat(game_channel, name, type, body) do
+  #  data = %{
+  #  name: name,
+  #    type: type,
+  #    body: body
+  #  }
+  #end
 end

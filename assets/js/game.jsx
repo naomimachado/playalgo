@@ -23,6 +23,7 @@ class Game extends React.Component{
          this.gotView(resp);
        }
        this.leaderboard();
+       this.listenForChats();
     })
     .receive("error", resp => { console.log("Unable to join", resp) });
     this.channel.on("join_game", resp => {
@@ -177,32 +178,46 @@ class Game extends React.Component{
     }
   }
 
+
   listenForChats() {
     document.getElementById('chat-form').addEventListener('submit', function(e){
       e.preventDefault()
 
       let userName = document.getElementById('user-name').value
+      let userType = document.getElementById('user-type').value
       let userMsg = document.getElementById('user-msg').value
 
       console.log(userName);
       console.log(userMsg);
 
-      // channel.push('shout', {name: userName, body: userMsg})
+      this.channel.push("shout", {game_channel: "guess_your_opponent", name: userName, type: userType, body: userMsg})
 
-      document.getElementById('user-name').value = ''
+      //console.log(this.channel);
+
       document.getElementById('user-msg').value = ''
     })
 
-    let userName = document.getElementById('user-name').value
-    let userType = document.getElementById('user-type').value
-    let userMsg = document.getElementById('user-msg').value
-    console.log(userName);
-    console.log(userMsg);
+    // let userName = document.getElementById('user-name').value
+    // let userType = document.getElementById('user-type').value
+    // let userMsg = document.getElementById('user-msg').value
+    // console.log(userName);
+    // console.log(userMsg);
+    //
+    //   var c = document.getElementById('chat-box')
+    //   c.insertAdjacentHTML('beforeend', '<p><b>' + userName +'(' + userType +'):</b>' + userMsg + '</p>')
+    //
+    //   document.getElementById('user-msg').value = ''
 
-      var c = document.getElementById('chat-box')
-      c.insertAdjacentHTML('beforeend', '<p><b>' + userName +'(' + userType +'):</b>' + userMsg + '</p>')
+    this.channel.on("shout", something => {
 
-      document.getElementById('user-msg').value = ''
+      // this.state.chat = something.chat
+      // this.setState(this.state);
+      let chatBox = document.querySelector('#chat-box')
+      let msgBlock = document.createElement('p')
+
+      msgBlock.insertAdjacentHTML('beforeend', `${something.name}(${something.type}): ${something.body}`)
+      chatBox.appendChild(msgBlock)
+    })
   }
 
 
