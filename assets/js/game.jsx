@@ -11,7 +11,8 @@ class Game extends React.Component{
     super(props);
     this.channel = props.channel;
     this.state = {
-      isHidden: true
+      isHidden: true,
+      chatHidden: true,
     }
     this.channel.join()
     .receive("ok", resp => {
@@ -42,6 +43,12 @@ class Game extends React.Component{
   toggleHidden () {
     this.setState({
       isHidden: !this.state.isHidden
+    })
+  }
+
+  chatHidden () {
+    this.setState({
+      chatHidden: !this.state.chatHidden
     })
   }
 
@@ -170,6 +177,34 @@ class Game extends React.Component{
     }
   }
 
+  listenForChats() {
+    document.getElementById('chat-form').addEventListener('submit', function(e){
+      e.preventDefault()
+
+      let userName = document.getElementById('user-name').value
+      let userMsg = document.getElementById('user-msg').value
+
+      console.log(userName);
+      console.log(userMsg);
+
+      // channel.push('shout', {name: userName, body: userMsg})
+
+      document.getElementById('user-name').value = ''
+      document.getElementById('user-msg').value = ''
+    })
+
+    let userName = document.getElementById('user-name').value
+    let userType = document.getElementById('user-type').value
+    let userMsg = document.getElementById('user-msg').value
+    console.log(userName);
+    console.log(userMsg);
+
+      var c = document.getElementById('chat-box')
+      c.insertAdjacentHTML('beforeend', '<p><b>' + userName +'(' + userType +'):</b>' + userMsg + '</p>')
+
+      document.getElementById('user-msg').value = ''
+  }
+
 
   render() {
     //viewer stuff
@@ -246,6 +281,12 @@ class Game extends React.Component{
           <div className="row flex-container">
               <h1>&nbsp; Guess Your Opponent: Welcome {this.state.player}</h1>
               <div className="views">
+                <div>
+                  <button onClick={this.chatHidden.bind(this)} className="btn btn-primary gradient">
+                    Click to view Chat Box
+                  </button>
+                  {!this.state.chatHidden && <ChatBox view={this.state.player} listenForChats={this.listenForChats.bind(this)}/>}
+                </div>
                 <h1>&nbsp; View Games</h1><br/>
                 <div>{view_list}</div>
               </div>
@@ -290,6 +331,14 @@ class Game extends React.Component{
                 {!this.state.isHidden && <RuleList />}</td>
                 </tr>
                 <tr>
+                  <td>
+                    <button onClick={this.chatHidden.bind(this)} className="btn btn-primary gradient">
+                      Click to view Chat Box
+                    </button>
+                    {!this.state.chatHidden && <ChatBox name={this.state.player} listenForChats={this.listenForChats.bind(this)}/>}
+                  </td>
+                </tr>
+                <tr>
                 <td>
                   <GameInfo />
                   <GuessOpponentGame player={this.state.player} challenge_guess_your_opponent={this.challenge_guess_your_opponent.bind(this)} />
@@ -320,6 +369,14 @@ class Game extends React.Component{
               <h1>&nbsp; Guess Your Opponent: Welcome {this.state.player}</h1>
               <h1 id="wait" className="disp">&nbsp; Waiting for player to join........</h1>
               <div  className="disp-table">
+                <div>
+                  <p>Ask other players to join your game in the Chat Box </p>
+                  <p>Game Name: {this.state.game_name}</p>
+                  <button onClick={this.chatHidden.bind(this)} className="btn btn-primary gradient">
+                    Click to view Chat Box
+                  </button>
+                  {!this.state.chatHidden && <ChatBox name={this.state.player} listenForChats={this.listenForChats.bind(this)}/>}
+                </div>
                 <RuleList />
               </div>
               <h2 className="inline2">Leader Board</h2>
@@ -382,8 +439,7 @@ class Game extends React.Component{
             <ul className="game">{nums}</ul>
           </div>
           <div>
-            &nbsp;Guessed Numbers:
-            <ul className="g-list">{guesses}</ul>
+            <ul className="g-list">&nbsp;Guessed Numbers:{guesses}</ul>
           </div>
         </div>
       </div>
@@ -626,4 +682,47 @@ function Heading() {
       </th>
     </tr>
   )
+}
+
+function ChatBox(params) {
+  console.log(params.name);
+  let info = "";
+  if(params.name){
+    info = "player";
+
+  return (
+    <div>
+      Chat Box
+      <div id="chat-box">
+      </div>
+      <form id="chat-form">
+        <input type="hidden" id="user-name" value={params.name}></input>
+        <input type="hidden" id="user-type" value="player"></input>
+        <div>UserName:{params.name}</div>
+        <textarea placeholder="Your comment" id="user-msg"></textarea>
+        <input type="button" onClick={()=> params.listenForChats()} value="Post" className="btn btn-primary gradient"></input>
+      </form>
+    </div>
+  )
+}
+
+if(params.view){
+  info = "viewer"
+
+  return (
+    <div>
+      Chat Box
+      <div id="chat-box">
+      </div>
+      <form id="chat-form">
+        <input type="hidden" id="user-name" value={params.view}></input>
+        <input type="hidden" id="user-type" value="viewer"></input>
+        <div>UserName:{params.view}</div>
+        <textarea placeholder="Your comment" id="user-msg"></textarea>
+        <input type="button" onClick={()=> params.listenForChats()} value="Post" className="btn btn-primary gradient"></input>
+      </form>
+    </div>
+  )
+}
+
 }
