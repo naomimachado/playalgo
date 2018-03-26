@@ -446,9 +446,9 @@ function RenderGuessList(props) {
   let num = props.num;
   return (
     <span className="rows">
-      <li id="guess">
+      <span id="guess">
         {num.number}({num.result})
-      </li>
+      </span>
     </span>
   )
 }
