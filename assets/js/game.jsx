@@ -241,7 +241,7 @@ class Game extends React.Component{
               <h5>&nbsp;Guess List:<ul className="g-list">{player2_list}</ul></h5>
               <h5>&nbsp;Clicks: {this.state.view.viewer_state.player2_state.player_state.clicks}</h5>
               <h5>&nbsp;Score:{this.state.view.viewer_state.player2_state.player_state.score}</h5>
-              <input type="button" className="btn btn-primary gradient" onClick={() => window.location.reload()} value="View Other Games" />
+              <input type="button" className="btn btn-primary gradient b1" onClick={() => window.location.reload()} value="View Other Games" />
           </div>)
         }
         else{
@@ -263,7 +263,7 @@ class Game extends React.Component{
                 <h5>&nbsp;Guess List:</h5><ul className="g-list">{player2_list}</ul>
                 <h5>&nbsp;Clicks: {this.state.view.viewer_state.player2_state.player_state.clicks}</h5>
                 <h5>&nbsp;Score:{this.state.view.viewer_state.player2_state.player_state.score}</h5>
-                <input type="button" className="btn btn-primary gradient back-games" onClick={() => window.location.reload()} value="View Other Games" />
+                <input type="button" className="btn btn-primary gradient b1" onClick={() => window.location.reload()} value="View Other Games" />
             </div>)
         }
       } else {
