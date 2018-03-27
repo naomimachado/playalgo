@@ -42,6 +42,7 @@ class Game extends React.Component{
     this.channel.on("shout", this.gotChat.bind(this));
   }
 
+//Attribution: https://eddyerburgh.me/toggle-visibility-with-react
   toggleHidden () {
     this.setState({
       isHidden: !this.state.isHidden
