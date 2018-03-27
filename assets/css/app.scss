@@ -56,9 +56,9 @@ body {
   columns: 15;
 }
 
-.guess-list{
-  columns: 5;
-  overflow: scroll;
+.g-list{
+  display: flex;
+  flex-wrap: wrap;
 }
 
 li{
@@ -67,15 +67,15 @@ li{
 }
 
 #car1{
-  width: 250px;
-  height: 175px;
+  width: 225px;
+  height: 150px;
   position: absolute;
   right: 1px;
 }
 
 #car2{
-  width: 250px;
-  height: 175px;
+  width: 225px;
+  height: 150px;
   position: absolute;
   right: 1px;
 }
@@ -83,8 +83,8 @@ li{
 
 .endline{
   background-color: white;
-  width: 175px;
-  height: 175px;
+  width: 150px;
+  height: 150px;
 }
 
 .flex-container{
@@ -104,6 +104,26 @@ li{
   background-color: black;
   background-image: url("/images/road1.png");
   background-size: contain;
+}
+
+.bg{
+  position: relative;
+  background: black url("/images/road1.png");
+  background-size: contain;
+  background-repeat: repeat-x;
+  background-position: 0 0;
+  animation: animate 7s linear infinite;
+}
+
+@keyframes animate {
+
+  from{
+    background-position: 0 0;
+  }
+  to{
+    background-position: 50% 0;
+  }
+
 }
 
 .disp{
@@ -204,4 +224,14 @@ table.table-style-three {
 	background: -ms-linear-gradient(top,  #33a6cc 50%,#0099cc 50%); /* IE10+ */
 	background: linear-gradient(to bottom,  #33a6cc 50%,#0099cc 50%); /* W3C */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#33a6cc', endColorstr='#0099cc',GradientType=0 ); /* IE6-9 */
+}
+
+//Attribution: https://elixircasts.io/chat-room-in-8-minutes
+
+#chat-box{
+  padding: 0 0 0 5px;
+  width:500px;
+  height: 500px;
+  border: 2px solid black;
+  overflow: scroll;
 }

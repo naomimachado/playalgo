@@ -11,7 +11,8 @@ class Game extends React.Component{
     super(props);
     this.channel = props.channel;
     this.state = {
-      isHidden: true
+      isHidden: true,
+      chatHidden: true,
     }
     this.channel.join()
     .receive("ok", resp => {
@@ -22,6 +23,7 @@ class Game extends React.Component{
          this.gotView(resp);
        }
        this.leaderboard();
+       this.init_chat();
     })
     .receive("error", resp => { console.log("Unable to join", resp) });
     this.channel.on("join_game", resp => {
@@ -37,12 +39,20 @@ class Game extends React.Component{
         this.gotView(resp);
       }
     });
+    this.channel.on("shout", this.gotChat.bind(this));
   }
 
+//Attribution: https://eddyerburgh.me/toggle-visibility-with-react
   toggleHidden () {
     this.setState({
       isHidden: !this.state.isHidden
     })
+  }
+
+  chatHidden () {
+    this.setState({
+      chatHidden: !this.state.chatHidden
+    });
   }
 
   challenge_guess_your_opponent(game_name, player_name, challenge) {
@@ -131,6 +141,11 @@ class Game extends React.Component{
     }
   }
 
+  gotChat(chat){
+    this.state.chat = chat.chat;
+    this.setState(this.state);
+  }
+
   update_track_viewer() {
 
     changePosCar(this.state.view.viewer_state.player1_state.player_state.score, "car1");
@@ -170,6 +185,26 @@ class Game extends React.Component{
     }
   }
 
+  init_chat() {
+    this.channel.push("chat", {game_channel: "guess_your_opponent"})
+      .receive("ok", resp => {
+        this.state.chat = resp.chat
+        this.setState(this.state);
+    });
+  }
+
+//Attribution: https://elixircasts.io/chat-room-in-8-minutes
+
+  listenForChats() {
+      let userName = document.getElementById('user-name').value
+      let userType = document.getElementById('user-type').value
+      let userMsg = document.getElementById('user-msg').value
+
+      this.channel.push("shout", {game_channel: "guess_your_opponent", name: userName, type: userType, body: userMsg})
+
+      document.getElementById('user-msg').value = ''
+    }
+
 
   render() {
     //viewer stuff
@@ -188,7 +223,6 @@ class Game extends React.Component{
 
         if(this.state.winner){
           winner = this.state.winner;
-        }
 
         return(
           <div className="rows flex-container">
@@ -196,7 +230,7 @@ class Game extends React.Component{
               <h2>&nbsp;Game name: {this.state.view.game_name}</h2>
               <h2>&nbsp;Game Winner:{winner}</h2>
               <h3>&nbsp;Player 1: {this.state.view.viewer_state.player1_state.player_state.name}</h3>
-              <h3>&nbsp;Guess List:</h3><ul className="guess-list">{player1_list}</ul>
+              <h3>&nbsp;Guess List:</h3><ul className="g-list">{player1_list}</ul>
               <h3>&nbsp;Clicks: {this.state.view.viewer_state.player1_state.player_state.clicks}</h3>
               <h3>&nbsp;Score:{this.state.view.viewer_state.player1_state.player_state.score}</h3>
                 <div id="car-stuff1">
@@ -204,11 +238,34 @@ class Game extends React.Component{
                   <img src="/images/2.png" id="car2"></img><img src="/images/finish.png" className="endline"></img>
                 </div>
               <h3>&nbsp;Player 2: {this.state.view.viewer_state.player2_state.player_state.name}</h3>
-              <h3>&nbsp;Guess List:</h3><ul className="guess-list">{player2_list}</ul>
+              <h3>&nbsp;Guess List:</h3><ul className="g-list">{player2_list}</ul>
               <h3>&nbsp;Clicks: {this.state.view.viewer_state.player2_state.player_state.clicks}</h3>
               <h3>&nbsp;Score:{this.state.view.viewer_state.player2_state.player_state.score}</h3>
               <input type="button" className="btn btn-primary gradient" onClick={() => window.location.reload()} value="View Other Games" />
           </div>)
+        }
+        else{
+          return(
+            <div className="rows flex-container">
+                <h1>&nbsp;Guess Your Opponent: Welcome viewer {this.state.player}</h1>
+                <h2>&nbsp;Game name: {this.state.view.game_name}</h2>
+                <h3>&nbsp;Player 1: {this.state.view.viewer_state.player1_state.player_state.name}</h3>
+                <h3>&nbsp;Guess List:</h3><ul className="g-list">{player1_list}</ul>
+                <h3>&nbsp;Clicks: {this.state.view.viewer_state.player1_state.player_state.clicks}</h3>
+                <h3>&nbsp;Score:{this.state.view.viewer_state.player1_state.player_state.score}</h3>
+                  <div id="car-stuff1">
+                    <div className="bg">
+                      <img src="/images/1.png" id="car1"></img><img src="/images/finish.png" className="endline"></img><br></br>
+                      <img src="/images/2.png" id="car2"></img><img src="/images/finish.png" className="endline"></img>
+                    </div>
+                  </div>
+                <h3>&nbsp;Player 2: {this.state.view.viewer_state.player2_state.player_state.name}</h3>
+                <h3>&nbsp;Guess List:</h3><ul className="g-list">{player2_list}</ul>
+                <h3>&nbsp;Clicks: {this.state.view.viewer_state.player2_state.player_state.clicks}</h3>
+                <h3>&nbsp;Score:{this.state.view.viewer_state.player2_state.player_state.score}</h3>
+                <input type="button" className="btn btn-primary gradient" onClick={() => window.location.reload()} value="View Other Games" />
+            </div>)
+        }
       } else {
 
         //display games to view
@@ -224,6 +281,12 @@ class Game extends React.Component{
           <div className="row flex-container">
               <h1>&nbsp; Guess Your Opponent: Welcome {this.state.player}</h1>
               <div className="views">
+                <div>
+                  <button onClick={this.chatHidden.bind(this)} className="btn btn-primary gradient">
+                    Click to view Chat Box
+                  </button>
+                  {!this.state.chatHidden && <ChatBox chat={this.state.chat} view={this.state.player} listenForChats={this.listenForChats.bind(this)}/>}
+                </div>
                 <h1>&nbsp; View Games</h1><br/>
                 <div>{view_list}</div>
               </div>
@@ -268,6 +331,14 @@ class Game extends React.Component{
                 {!this.state.isHidden && <RuleList />}</td>
                 </tr>
                 <tr>
+                  <td>
+                    <button onClick={this.chatHidden.bind(this)} className="btn btn-primary gradient">
+                      Click to view Chat Box
+                    </button>
+                    {!this.state.chatHidden && <ChatBox chat={this.state.chat} name={this.state.player} listenForChats={this.listenForChats.bind(this)}/>}
+                  </td>
+                </tr>
+                <tr>
                 <td>
                   <GameInfo />
                   <GuessOpponentGame player={this.state.player} challenge_guess_your_opponent={this.challenge_guess_your_opponent.bind(this)} />
@@ -298,15 +369,16 @@ class Game extends React.Component{
               <h1>&nbsp; Guess Your Opponent: Welcome {this.state.player}</h1>
               <h1 id="wait" className="disp">&nbsp; Waiting for player to join........</h1>
               <div  className="disp-table">
+                <div>
+                  <p>Ask other players to join your game in the Chat Box </p>
+                  <p>Game Name: {this.state.game_name}</p>
+                  <button onClick={this.chatHidden.bind(this)} className="btn btn-primary gradient">
+                    Click to view Chat Box
+                  </button>
+                  {!this.state.chatHidden && <ChatBox chat={this.state.chat} name={this.state.player} listenForChats={this.listenForChats.bind(this)} />}
+                </div>
                 <RuleList />
               </div>
-              <h2 className="inline2">Leader Board</h2>
-              <table className="inline1 table-style-three">
-                <tbody>
-                  <Heading />
-                  {leader_list1}
-                </tbody>
-              </table>
             </div>)
           }
     } else {
@@ -334,7 +406,7 @@ class Game extends React.Component{
             <div>
               &nbsp;Guesses in this round:
               <br/>
-              <ul className="guess-list">{guesses}</ul>
+              <ul className="g-list">{guesses}</ul>
               <GameStats state={this.state}/>
             </div>&nbsp;
             <input type="button" className="btn btn-primary gradient" onClick={() => window.location.reload()} value="New Game" />
@@ -346,8 +418,10 @@ class Game extends React.Component{
       return (
         <div className="rows flex-container">
           <div id="car-stuff">
-            <img src="/images/1.png" id="car1"></img><img src="/images/finish.png" className="endline"></img><br></br>
-            <img src="/images/2.png" id="car2"></img><img src="/images/finish.png" className="endline"></img>
+            <div className="bg">
+              <img src="/images/1.png" id="car1"></img><img src="/images/finish.png" className="endline"></img><br></br>
+              <img src="/images/2.png" id="car2"></img><img src="/images/finish.png" className="endline"></img>
+            </div>
           </div>
           <div id="game-stuff">
             <div className="cols">
@@ -358,8 +432,7 @@ class Game extends React.Component{
             <ul className="game">{nums}</ul>
           </div>
           <div>
-            &nbsp;Guessed Numbers:
-            <ul className="guess-list">{guesses}</ul>
+            <ul className="g-list">&nbsp;Guessed Numbers:{guesses}</ul>
           </div>
         </div>
       </div>
@@ -422,9 +495,9 @@ function RenderGuessList(props) {
   let num = props.num;
   return (
     <span className="rows">
-      <li id="guess">
+      <span id="guess">
         {num.number}({num.result})
-      </li>
+      </span>
     </span>
   )
 }
@@ -601,5 +674,60 @@ function Heading() {
         Points
       </th>
     </tr>
+  )
+}
+
+function ChatBox(params) {
+  let info = "";
+
+  let chat_list = _.map(params.chat, (chat, ii) => {
+    return <Chat player_name={chat.player_name} type={chat.type} body={chat.body} key={ii} />;
+  });
+
+  if(params.name){
+    info = "player";
+
+  return (
+    <div>
+      Chat Box
+      <div id="chat-box">
+        {chat_list}
+      </div>
+      <form id="chat-form">
+        <input type="hidden" id="user-name" value={params.name}></input>
+        <input type="hidden" id="user-type" value="player"></input>
+        <div>UserName:{params.name}</div>
+        <textarea placeholder="Your comment" id="user-msg"></textarea><br></br>
+        <input type="button" onClick={()=> params.listenForChats()} value="Post" className="btn btn-primary gradient"></input>
+      </form>
+    </div>
+  )
+}
+
+if(params.view){
+  info = "viewer"
+
+  return (
+    <div>
+      Chat Box
+      <div id="chat-box">
+        {chat_list}
+      </div>
+      <form id="chat-form">
+        <input type="hidden" id="user-name" value={params.view}></input>
+        <input type="hidden" id="user-type" value="viewer"></input>
+        <div>UserName:{params.view}</div>
+        <textarea placeholder="Your comment" id="user-msg"></textarea>
+        <input type="button" onClick={()=> params.listenForChats()} value="Post" className="btn btn-primary gradient"></input>
+      </form>
+    </div>
+  )
+}
+
+}
+
+function Chat(params){
+  return(
+    <p><b>{params.player_name}({params.type}):</b>{params.body}</p>
   )
 }
