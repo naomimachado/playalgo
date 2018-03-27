@@ -1,7 +1,7 @@
 /* This file is for your main application css. */
 @import "bootstrap";
 body {
-  font-size: 15pt;
+  font-size: 12pt;
   font-family: Rockwell, Courier Bold, Courier, Georgia, Times, Times New Roman, serif;
   font-weight: normal;
   overflow: scroll;
@@ -62,10 +62,15 @@ body {
 }
 
 li{
-  padding: 5px;
+  padding: 4px;
   list-style-type: none;
 }
 
+.back-games{
+  position: absolute;
+  top: 20px;
+  right: 30px;
+}
 #car1{
   width: 225px;
   height: 150px;
@@ -97,7 +102,7 @@ li{
 }
 
 .flex-container > #game-stuff {
-  font-size: 30px;
+  font-size: 15pt;
 }
 
 .flex-container > #car-stuff {
@@ -159,7 +164,7 @@ li{
   position: absolute;
   right: 50px;
   top: 100px;
-  font-size: 25px;
+  font-size: 15pt;
 }
 
 .inline2{
@@ -167,7 +172,7 @@ li{
   position: absolute;
   right: 300px;
   top: 70px;
-  font-size: 30px;
+  font-size: 15pt;
   font-weight: bold;
 }
 
@@ -176,7 +181,7 @@ li{
   position: absolute;
   left: 250px;
   top: 70px;
-  font-size: 25px;
+  font-size: 15pt;
 }
 
 //Attribution: http://webtricksandtreats.com/table-style-css/
@@ -210,7 +215,7 @@ table.table-style-three {
 	}
 
   .btn{
-    font-size: 25px;
+    font-size: 15pt;
     font-weight: bold;
   }
 
