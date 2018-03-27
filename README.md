@@ -1,4 +1,21 @@
 # Playalgo
+The game is built on the idea of play and learn algorithms. It is a 2-player racing game. It could
+be classified as a serious learning game where each player is required to apply algorithmic logic
+to progress in any stage of the game. In this release we have developed Guess Your Opponent
+game.
+
+Playing Guess Your Opponent is interesting as well as impactful. It intuitively improves your
+application knowledge of searching algorithms.
+
+A user can join a game channel “guess your opponent” as a player or viewer. A player can join
+an existing game (where another user is waiting for opponent) or create a new challenge by
+giving a challenge number (which will be guessed by the opponent) and a game name. When a
+new game is created by the player, he will have to wait for the other player to join. Once both
+players have joined, the game will begin.
+
+Visit [playalgo](http://playalgo.purneshdixit.stream)
+
+# How to run in your server
 
 To start your Phoenix server:
 
