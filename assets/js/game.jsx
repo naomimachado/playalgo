@@ -142,7 +142,6 @@ class Game extends React.Component{
   }
 
   gotChat(chat){
-    console.log(chat);
     this.state.chat = chat.chat;
     this.setState(this.state);
   }
@@ -200,9 +199,6 @@ class Game extends React.Component{
       let userName = document.getElementById('user-name').value
       let userType = document.getElementById('user-type').value
       let userMsg = document.getElementById('user-msg').value
-
-      console.log(userName);
-      console.log(userMsg);
 
       this.channel.push("shout", {game_channel: "guess_your_opponent", name: userName, type: userType, body: userMsg})
 
@@ -701,7 +697,7 @@ function ChatBox(params) {
         <input type="hidden" id="user-name" value={params.name}></input>
         <input type="hidden" id="user-type" value="player"></input>
         <div>UserName:{params.name}</div>
-        <textarea placeholder="Your comment" id="user-msg"></textarea>
+        <textarea placeholder="Your comment" id="user-msg"></textarea><br></br>
         <input type="button" onClick={()=> params.listenForChats()} value="Post" className="btn btn-primary gradient"></input>
       </form>
     </div>
