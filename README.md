@@ -15,8 +15,6 @@ players have joined, the game will begin.
 
 Visit http://playalgo.purneshdixit.stream to play the game and build your stats
 
-# Please select Guess Your Opponent in the drop down menu
-
 *Note - For best user experience, open the link in a full window of desktop, laptop or tablet. Use of google chrome(latest) is recommended*
 
 # Limitations
