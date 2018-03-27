@@ -54,7 +54,6 @@ defmodule Playalgo.Game do
   end
 
   defp joinable_games(game, game_channel) when game_channel == "guess_your_opponent" do
-    IO.inspect Map.keys(game.guess_your_opponent)
     Enum.filter Map.keys(game.guess_your_opponent), fn(x) ->
       !has_opponent(game, game_channel, x)
     end
