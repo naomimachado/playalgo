@@ -13,7 +13,13 @@ giving a challenge number (which will be guessed by the opponent) and a game nam
 new game is created by the player, he will have to wait for the other player to join. Once both
 players have joined, the game will begin.
 
-Visit [playalgo](http://playalgo.purneshdixit.stream)
+Visit http://playalgo.purneshdixit.stream
+
+*Note - For best user experience, open the link in a full window of desktop, laptop or tablet. Use of google chrome(latest) is recommended*
+
+# Limitations
+ - Not a very sleak and intuitive UI.
+ - Sometimes you should refresh if you are unable to join a game or don't see the existing games.
 
 # How to run in your server
 
