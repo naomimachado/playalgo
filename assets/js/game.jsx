@@ -229,7 +229,7 @@ class Game extends React.Component{
               <h1>&nbsp;Guess Your Opponent: Welcome viewer {this.state.player}</h1>
               <h4>&nbsp;Game name: {this.state.view.game_name}</h4>
               <h4>&nbsp;Game Winner:{winner}</h4>
-              <h5>&nbsp;Player 1: {this.state.view.viewer_state.player1_state.player_state.name}</h5>
+              <h5>&nbsp;Player 1: {this.state.view.viewer_state.player1_state.player_state.name}<span><Avatar car={1}/></span></h5>
               <h5>&nbsp;Guess List:<ul className="g-list">{player1_list}</ul></h5>
               <h5>&nbsp;Clicks: {this.state.view.viewer_state.player1_state.player_state.clicks}</h5>
               <h5>&nbsp;Score:{this.state.view.viewer_state.player1_state.player_state.score}</h5>
@@ -237,7 +237,7 @@ class Game extends React.Component{
                   <img src="/images/1.png" id="car1"></img><img src="/images/finish.png" className="endline"></img><br></br>
                   <img src="/images/2.png" id="car2"></img><img src="/images/finish.png" className="endline"></img>
                 </div>
-              <h5>&nbsp;Player 2: {this.state.view.viewer_state.player2_state.player_state.name}</h5>
+              <h5>&nbsp;Player 2: {this.state.view.viewer_state.player2_state.player_state.name}<span><Avatar car={2}/></span></h5>
               <h5>&nbsp;Guess List:<ul className="g-list">{player2_list}</ul></h5>
               <h5>&nbsp;Clicks: {this.state.view.viewer_state.player2_state.player_state.clicks}</h5>
               <h5>&nbsp;Score:{this.state.view.viewer_state.player2_state.player_state.score}</h5>
@@ -249,7 +249,7 @@ class Game extends React.Component{
             <div className="rows flex-container">
                 <h1>&nbsp;Guess Your Opponent: Welcome viewer {this.state.player}</h1>
                 <h4>&nbsp;Game name: {this.state.view.game_name}</h4>
-                <h5>&nbsp;Player 1: {this.state.view.viewer_state.player1_state.player_state.name}</h5>
+                <h5>&nbsp;Player 1: {this.state.view.viewer_state.player1_state.player_state.name}<span><Avatar car={1}/></span></h5>
                 <h5>&nbsp;Guess List:</h5><ul className="g-list">{player1_list}</ul>
                 <h5>&nbsp;Clicks: {this.state.view.viewer_state.player1_state.player_state.clicks}</h5>
                 <h5>&nbsp;Score:{this.state.view.viewer_state.player1_state.player_state.score}</h5>
@@ -259,7 +259,7 @@ class Game extends React.Component{
                       <img src="/images/2.png" id="car2"></img><img src="/images/finish.png" className="endline"></img>
                     </div>
                   </div>
-                <h5>&nbsp;Player 2: {this.state.view.viewer_state.player2_state.player_state.name}</h5>
+                <h5>&nbsp;Player 2: {this.state.view.viewer_state.player2_state.player_state.name}<span><Avatar car={2}/></span></h5>
                 <h5>&nbsp;Guess List:</h5><ul className="g-list">{player2_list}</ul>
                 <h5>&nbsp;Clicks: {this.state.view.viewer_state.player2_state.player_state.clicks}</h5>
                 <h5>&nbsp;Score:{this.state.view.viewer_state.player2_state.player_state.score}</h5>
@@ -346,7 +346,10 @@ class Game extends React.Component{
                     <h5>&nbsp; My Games:</h5>
                     { my_game_list }
 		    <br></br>
+                    <JoinInfo />
+                    <GuessOpponentGame player={this.state.player} challenge_guess_your_opponent={this.challenge_guess_your_opponent.bind(this)} existing={true} />
                     <h5>&nbsp; Existing Games:</h5>
+                    <h6>&nbsp; <b>(Refresh to see latest games)</b></h6>
                     { game_list }
                 </td>
             </tr>
@@ -369,10 +372,10 @@ class Game extends React.Component{
           return (
             <div className="row flex-container">
               <h1>&nbsp; Guess Your Opponent: Welcome {this.state.player}</h1>
-              <h1 id="wait" className="disp">&nbsp; Waiting for player to join........</h1>
+              <h1 id="wait" className="disp">&nbsp;Waiting for opponent to join........</h1>
               <div  className="disp-table">
                 <div>
-                  <p>Ask other players to join your game in the Chat Box </p>
+                  <p><br/>Ask other players to join your game in the Chat Box </p>
                   <p>Game Name: {this.state.game_name}</p>
                   <button onClick={this.chatHidden.bind(this)} className="btn btn-primary gradient">
                     Click to view Chat Box
@@ -427,7 +430,7 @@ class Game extends React.Component{
           </div>
           <div id="game-stuff">
             <div className="cols">
-              &nbsp;Welcome player:<span>{this.state.player}</span>
+              &nbsp;Welcome player:<span>{this.state.player}</span><span><Avatar car={this.state.player_state.player_state.id}/></span>
           </div>
           <div className="cols cols-3">
             &nbsp;List of Numbers:
@@ -445,24 +448,42 @@ class Game extends React.Component{
 }
 }
 
+function Avatar(params){
+let car=params.car;
+
+if(car == 1){
+  return (<img src="/images/1.png" className="smallcar"></img>)
+} else {
+  return (<img src="/images/2.png" className="smallcar"></img>)
+}
+}
+
 function GuessOpponentGame(params) {
-  return (
-    <div className="info col-12">
-      <span>
-        <p><input type="number" id="challenge" placeholder="Challenge Number" /></p>
-        <p><input type="text" id="game-name" placeholder="New Game Name" /></p>
-        <p><input type="button" className="btn btn-primary gradient" onClick={() =>
+  if (!params.existing) {
+    return (
+      <div className="info col-12">
+        <span>
+          <p><input type="number" id="challenge" placeholder="Challenge Number" /></p>
+          <p><input type="text" id="game-name" placeholder="New Game Name" /></p>
+          <p><input type="button" className="btn btn-primary gradient" onClick={() =>
             params.challenge_guess_your_opponent(document.getElementById("game-name").value,
             params.player, document.getElementById("challenge").value)} value="Challenge" /></p>
         </span>
       </div>
     )
+    } else {
+      return (
+      <div className="info col-12">
+        <span><p><input type="number" id="challenge-existing" placeholder="Challenge Number" /></p></span>
+      </div>
+    )
+    } 
   }
 
   function GameInstance(params) {
     if(params.challenge_guess_your_opponent) {
       return (<div className="col-6 game-item" onClick={() =>
-      params.challenge_guess_your_opponent(params.game, params.player, document.getElementById("challenge").value)}>
+      params.challenge_guess_your_opponent(params.game, params.player, document.getElementById("challenge-existing").value)}>
       Join {params.game}
     </div>)
   } else if (params.get_game_guess_your_opponent) {
@@ -541,9 +562,18 @@ function GameInfo(){
         </tr>
         <tr>
           <td>
-            &nbsp; And enter a new game name <br/>(it should be unique from the existing ones)
+            &nbsp;Now, enter a new game name and click on challenge <br/>&nbsp;(You have to wait for another player to join your game.<br/>&nbsp;Feel free to send a message on the chat box stating your game name<br/>&nbsp;and ask others to join.)
           </td>
         </tr>
+    </tbody>
+  </table>
+  )
+}
+
+function JoinInfo() {
+  return (
+    <table>
+      <tbody>
         <tr>
           <td>
             <b>&nbsp;To join an existing Game:</b>
@@ -559,8 +589,8 @@ function GameInfo(){
             &nbsp;And click on the game you want to join <br/> &nbsp;from the exisitng game list.
           </td>
         </tr>
-    </tbody>
-  </table>
+      </tbody>
+    </table>
   )
 }
 
@@ -572,13 +602,16 @@ function RuleList() {
         <th>&nbsp; RULES:</th>
       </tr>
       <tr>
-        <td>&nbsp;1. You will guess the number choosen by your opponent <br/> &nbsp; from the list of numbers.</td>
+        <td>&nbsp;1. You have to challenge your opponent with a number <br/>&nbsp; and you will guess the number choosen by your opponent <br/> &nbsp; from the list of numbers.</td>
       </tr>
       <tr>
-        <td>&nbsp;2. For each guess you will get a clue about your <br/> &nbsp; distance from the correct guess.</td>
+        <td>&nbsp;2. To guess the challenged number, click on a tile from the<br/>&nbsp; list of numbers.<br/>&nbsp; (You can click only one tile at a time) </td>
       </tr>
       <tr>
-        <td>&nbsp;3. The <b>clues</b> will be like </td>
+        <td>&nbsp;3. For each guess you will get a clue about your <br/> &nbsp; distance from the number challenged by your opponent.</td>
+      </tr>
+      <tr>
+        <td>&nbsp;4. The <b>clues</b> will be like </td>
       </tr>
       <tr>
         <td>&nbsp; a) very_high => Your guess is very large than <br/> &nbsp; the number.
@@ -600,12 +633,20 @@ function RuleList() {
         <td> &nbsp; e) match => Your guess is correct.
         </td>
       </tr>
+      <tr>
+        <td>&nbsp;5. For every guess, your car will move forward <br/> &nbsp; based on how close your guess is to the challenged number.
+        </td>
+      </tr>
+      <tr>
+        <td>&nbsp;6. The game ends when one of the players guesses <br/> &nbsp; the challenged number correctly.
+        </td>
+      </tr>
         <tr>
           <td><b>&nbsp;Hint:</b>
           </td>
         </tr>
         <tr>
-          <td> <i>&nbsp; To win you must try to click as minimum tiles<br/> &nbsp; as possible.</i>
+          <td> <i>&nbsp; To get higher rank on the leaderboard, try to click as minimum tiles<br/> &nbsp; as possible.</i>
           </td>
         </tr>
       </tbody>
@@ -618,7 +659,7 @@ function GameStats(params){
     <table>
     <tbody>
       <tr><td>&nbsp;Game Name:</td><td>{params.state.game_name}</td></tr>
-      <tr><td>&nbsp;Name:</td><td>{params.state.player}</td></tr>
+      <tr><td>&nbsp;Name:</td><td>{params.state.player}<span><Avatar car={params.state.player_state.player_state.id}/></span></td></tr>
         <tr><td>&nbsp;Opponent's Name:</td><td>{params.state.player_state.player_state.opponent_name}</td></tr>
         <tr><td>&nbsp;Your score:</td><td>{params.state.player_state.player_state.score}</td></tr>
         <tr><td>&nbsp;Opponent's Score:</td><td>{params.state.player_state.player_state.opponent_score}</td></tr>

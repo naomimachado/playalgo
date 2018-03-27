@@ -43,6 +43,7 @@ body {
 #num:hover{
   background-color: red;
   color: black;
+  cursor: pointer;
 }
 
 #guess{
@@ -85,6 +86,10 @@ li{
   right: 1px;
 }
 
+.smallcar{
+  width: 35px;
+  height: 25px;
+}
 
 .endline{
   background-color: white;
