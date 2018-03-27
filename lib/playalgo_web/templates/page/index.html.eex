@@ -9,8 +9,6 @@
       </select></span>
     <span><p><select id="game-list">
       <option value="guess_your_opponent">Guess Your Opponent</option>
-      <option value="sort_attack">Sort_Attack</option>
-      <option value="org_my_cheatsheet">Organize My Cheatsheet</option>
     </select>
     <input type="button" class="btn btn-primary gradient" id="join" value="Join" onclick="join();"></span>
   </div>
