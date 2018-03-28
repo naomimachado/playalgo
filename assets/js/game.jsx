@@ -348,8 +348,7 @@ class Game extends React.Component{
 		    <br></br>
                     <JoinInfo />
                     <GuessOpponentGame player={this.state.player} challenge_guess_your_opponent={this.challenge_guess_your_opponent.bind(this)} existing={true} />
-                    <h5>&nbsp; Existing Games:</h5>
-                    <h6>&nbsp; <b>(Refresh to see latest games)</b></h6>
+                    <h5>&nbsp; Existing Games:(Refresh to see latest games)</h5>
                     { game_list }
                 </td>
             </tr>
@@ -586,7 +585,7 @@ function JoinInfo() {
         </tr>
         <tr>
           <td>
-            &nbsp;And click on the game you want to join <br/> &nbsp;from the exisitng game list.
+            &nbsp;And click on the game you want to join <br/> &nbsp;from the exisiting game list.
           </td>
         </tr>
       </tbody>
