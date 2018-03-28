@@ -585,7 +585,7 @@ function JoinInfo() {
         </tr>
         <tr>
           <td>
-            &nbsp;And click on the game you want to join <br/> &nbsp;from the exisiting game list.
+            &nbsp;And click on the game you want to join <br/> &nbsp;from the existing game list.
           </td>
         </tr>
       </tbody>
